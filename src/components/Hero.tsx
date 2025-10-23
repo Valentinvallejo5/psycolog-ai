@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import plantHero from "@/assets/plant-hero.png";
+import { HowItWorks } from "@/components/HowItWorks";
 
 export const Hero = () => {
   return (
@@ -21,13 +21,7 @@ export const Hero = () => {
           </div>
 
           <div className="relative">
-            <div className="rounded-3xl overflow-hidden shadow-[var(--shadow-glow)]">
-              <img 
-                src={plantHero} 
-                alt="Calming therapeutic environment" 
-                className="w-full h-auto object-cover"
-              />
-            </div>
+            <HowItWorks />
           </div>
         </div>
       </div>
