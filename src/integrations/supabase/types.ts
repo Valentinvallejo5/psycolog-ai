@@ -92,25 +92,25 @@ export type Database = {
       slider_preferences: {
         Row: {
           id: string
-          interaction: number
-          mood: number
-          tone: number
+          interaction: string
+          mood: string
+          tone: string
           updated_at: string | null
           user_id: string
         }
         Insert: {
           id?: string
-          interaction?: number
-          mood?: number
-          tone?: number
+          interaction?: string
+          mood?: string
+          tone?: string
           updated_at?: string | null
           user_id: string
         }
         Update: {
           id?: string
-          interaction?: number
-          mood?: number
-          tone?: number
+          interaction?: string
+          mood?: string
+          tone?: string
           updated_at?: string | null
           user_id?: string
         }

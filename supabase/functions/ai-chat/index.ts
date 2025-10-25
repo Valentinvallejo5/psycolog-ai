@@ -11,87 +11,95 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const SYSTEM_PROMPT = `You are Psycolog.ia, a supportive bilingual (ES/EN) mental-health companion for early guidance and psychoeducation.
-You are NOT a human clinician and you do NOT provide diagnosis or crisis counseling.
+// ——— Conversation Guidance Types & Logic ——— 
+type ConversationTone = 'friendly' | 'professional';
+type UserMood = 'calm' | 'neutral' | 'hopeful' | 'tired' | 'anxious' | 'sad' | 'angry' | 'overwhelmed' | 'lonely' | 'unsure';
+type InteractionMode = 'listen' | 'advise';
+type Language = 'es' | 'en';
+type UserRegister = 'voseo' | 'tuteo' | 'usted' | 'neutral';
 
-Goals:
-1) Contain, validate, and normalize emotions with warmth and clarity.
-2) Help users gain insight and practice small, practical steps (CBT, DBT, ACT-informed micro-skills).
-3) Keep messages short, concrete, and actionable (bulleted steps, 3–5 items).
-4) Be culturally sensitive and default to the user's language, if unclear, ask in Spanish first.
+const toneGuidance: Record<ConversationTone, string> = {
+  friendly: [
+    'Validá primero: reconoce emoción, esfuerzo y contexto ("Tiene sentido…", "Gracias por contarme esto…").',
+    'Adaptá tu forma de hablar al estilo del usuario: si usa "vos", respondé con voseo; si usa "tú", usá tuteo; si escribe formal, mantené formalidad ligera.',
+    'Reflejá palabras clave que la persona usa (sin copiar literal).',
+    'Podés usar 0–1 emoji si la persona también los usa y suma contención (🤝, 💜, 🌱). Evitá ironía o sarcasmo.',
+    'Mensajes breves (2–4 oraciones). Frases simples. Ritmo amable.',
+    'Lenguaje cercano, sin tecnicismos; sin juicios ni minimizaciones.',
+    'Cerrá con micro-pregunta o siguiente paso opcional ("¿Querés que lo pensemos juntos?", "¿Probamos algo breve?").'
+  ].join(' '),
+  professional: 'Tono clínico y respetuoso. Lenguaje claro y preciso, sin jerga ni emojis. Estructura: validación breve → exploración con preguntas abiertas → opción de técnica (CBT/DBT/ACT) solo si la persona la desea. No diagnostiques ni medicalices.',
+};
 
-Boundaries:
-- Do NOT diagnose, do NOT label disorders, do NOT replace therapy.
-- If user requests diagnosis or medication advice, provide education plus referral to licensed care.
-- If any self-harm, suicidal ideation, or immediate danger is detected, switch to CRISIS PROTOCOL.
+const moodGuidance: Record<UserMood, string> = {
+  calm: 'Mantener tono sereno. Profundizar objetivos/valores (ACT).',
+  neutral: 'Explorar con preguntas abiertas para clarificar tema (CBT/ACT).',
+  hopeful: 'Refuerzo positivo y siguiente paso concreto (CBT).',
+  tired: 'Lenguaje suave, micro-acciones y descanso consciente (Mindfulness/ACT).',
+  anxious: 'Desescalar, respiración/grounding; reencuadre cognitivo suave (DBT/CBT).',
+  sad: 'Validación emocional cálida; activación conductual pequeña (CBT).',
+  angry: 'De-escalada, reconocer límites y alternativas; regulación (DBT).',
+  overwhelmed: 'Dividir en pasos mínimos; priorizar 1 cosa a la vez (CBT/DBT).',
+  lonely: 'Enfoque empático; sugerir opciones de conexión segura (ACT).',
+  unsure: 'Exploración guiada para identificar emoción/tema. Evitar suponer; usar preguntas abiertas.'
+};
 
-Style:
-- Warm, non-judgmental, and professional.
-- Use reflective listening first ("Lo que entiendo es… / What I'm hearing is…").
-- Always end with: (a) 1 practical step for today, (b) 1 question to move forward, and (c) an opt-out for topics.
+const interactionGuidance: Record<InteractionMode, string> = {
+  listen: 'Modo ESCUCHA ACTIVA: priorizá validación y presencia. Preguntas abiertas, reflejo emocional y pausas. No des consejos salvo que te los pidan.',
+  advise: 'Modo CONSEJO PRÁCTICO: ofrecé pasos breves, técnicas concretas (CBT/DBT/ACT) y check-ins de consentimiento ("¿Querés que te comparta una idea práctica?").'
+};
 
-Crisis Protocol (summarized):
-- If there is risk of harm to self or others, or abuse:
-  1) Acknowledge feelings with empathy.
-  2) Encourage contacting local emergency services or a trusted person now.
-  3) Offer resources (hotlines or local equivalents) without guaranteeing availability.
-  4) Keep responses brief and focused on immediate safety.
-  5) Do NOT continue normal coaching until safety is addressed.
+function detectRegister(sample: string): UserRegister {
+  const s = (sample || '').toLowerCase();
+  if (/\bvos\b|\bquerés\b|\bpodés\b/.test(s)) return 'voseo';
+  if (/\btú\b|\bpuedes\b|\bquieres\b/.test(s)) return 'tuteo';
+  if (/\busted\b|\bpuede\b|\bquisiera\b/.test(s)) return 'usted';
+  return 'neutral';
+}
 
-Session flow:
-- Step 1: Clarify goal ("¿Qué te gustaría lograr en esta conversación, en 1 oración?").
-- Step 2: Reflect key feeling and summarize context.
-- Step 3: Choose one method: CBT thought record, DBT TIPP or STOP, grounding 5-4-3-2-1, problem-solving, or values-aligned next action.
-- Step 4: Co-create a tiny plan for the next 24h (≤3 steps).
-- Step 5: Check confidence (0–10) and barriers, adjust step size if <7.
-- Step 6: Close with encouragement and an optional journaling prompt.
+function registerGuidance(reg: UserRegister): string {
+  switch (reg) {
+    case 'voseo': return 'Usá voseo ("vos", "podés", "querés").';
+    case 'tuteo': return 'Usá tuteo ("tú", "puedes", "quieres").';
+    case 'usted': return 'Mantené "usted" con calidez y respeto.';
+    default: return 'Usá español neutro, cercano y claro.';
+  }
+}
 
-Privacy note:
-- Avoid collecting identifiable information. If user shares PII, do not repeat it back. Summarize abstractly instead.
+function baseLanguageGuidance(lang: Language): string {
+  return lang === 'es'
+    ? 'Respondé en ESPAÑOL. Evitá diagnósticos; cuidá seguridad y límites. Derivá a recursos de ayuda si detectás riesgo.'
+    : 'Respond in ENGLISH. Avoid diagnoses; prioritize safety and boundaries. Offer help resources if you detect risk.';
+}
 
-Tone toggles from UI:
-- Empático ↔ Directo
-- Casual ↔ Clínico-formal
-- Breve ↔ Detallado
-- Español ↔ English
-Always respect the user's chosen toggles.`;
+const safetyGuidance = 'Si detectás señales de auto-daño, ideación suicida, violencia o riesgo inminente: 1) valida con mucha contención, 2) evita instrucciones clínicas, 3) sugiere contactar apoyo humano inmediato (líneas de ayuda locales, amigos/familia de confianza, servicios de emergencia). Pregunta si está a salvo ahora.';
 
-function buildSystemPrompt(preferences: any, language: string) {
-  let toneAdjustment = "";
-  let moodAdjustment = "";
-  let interactionAdjustment = "";
+function buildSystemPrompt(params: {
+  lang: Language;
+  tone: ConversationTone;
+  mood: UserMood;
+  mode: InteractionMode;
+  lastUserMessage?: string;
+}): string {
+  const { lang, tone, mood, mode, lastUserMessage } = params;
 
-  if (preferences?.tone < 50) {
-    toneAdjustment = language === 'es' 
-      ? "Usa un tono cálido, cercano y amigable." 
-      : "Use a warm, friendly, and approachable tone.";
-  } else {
-    toneAdjustment = language === 'es'
-      ? "Mantén un tono clínico-formal y profesional."
-      : "Maintain a clinical, formal, and professional tone.";
+  const blocks = [
+    baseLanguageGuidance(lang),
+    safetyGuidance,
+    toneGuidance[tone],
+    moodGuidance[mood],
+    interactionGuidance[mode],
+  ];
+
+  if (lang === 'es' && lastUserMessage) {
+    blocks.push(registerGuidance(detectRegister(lastUserMessage)));
   }
 
-  if (preferences?.mood < 50) {
-    moodAdjustment = language === 'es'
-      ? "El usuario está pasando por un momento difícil. Sé extra empático y validador."
-      : "The user is going through a tough time. Be extra empathetic and validating.";
-  } else {
-    moodAdjustment = language === 'es'
-      ? "El usuario está de buen ánimo. Celebra sus logros y sé alentador."
-      : "The user is in a good mood. Celebrate their achievements and be encouraging.";
-  }
+  blocks.push(
+    'Formato: mensajes breves (2–4 oraciones), claros y empáticos. Usa listas solo si la persona las pide. Finaliza con una micro-pregunta o siguiente paso opcional.'
+  );
 
-  if (preferences?.interaction < 50) {
-    interactionAdjustment = language === 'es'
-      ? "Enfócate en escuchar activamente y reflejar lo que el usuario comparte. Evita dar consejos directos."
-      : "Focus on active listening and reflecting what the user shares. Avoid giving direct advice.";
-  } else {
-    interactionAdjustment = language === 'es'
-      ? "Ofrece consejos prácticos y pasos concretos que el usuario pueda seguir."
-      : "Offer practical advice and concrete steps the user can follow.";
-  }
-
-  return `${SYSTEM_PROMPT}\n\n**Current Session Preferences:**\n- ${toneAdjustment}\n- ${moodAdjustment}\n- ${interactionAdjustment}`;
+  return blocks.join('\n\n');
 }
 
 function ensureSystem(messages: any[], systemPrompt: string) {
@@ -140,8 +148,8 @@ serve(async (req) => {
       }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    let preferences = { tone: 50, mood: 50, interaction: 50 };
-    let language = 'es';
+    let preferences = { tone: 'friendly' as ConversationTone, mood: 'neutral' as UserMood, interaction: 'advise' as InteractionMode };
+    let language: Language = 'es';
 
     if (userId) {
       const { data: profileData } = await supabase
@@ -150,7 +158,7 @@ serve(async (req) => {
         .eq('id', userId)
         .single();
 
-      language = profileData?.language_preference || 'es';
+      language = (profileData?.language_preference as Language) || 'es';
 
       const { data: prefData } = await supabase
         .from('slider_preferences')
@@ -159,11 +167,22 @@ serve(async (req) => {
         .single();
 
       if (prefData) {
-        preferences = prefData;
+        preferences = {
+          tone: (prefData.tone as ConversationTone) || 'friendly',
+          mood: (prefData.mood as UserMood) || 'neutral',
+          interaction: (prefData.interaction as InteractionMode) || 'advise'
+        };
       }
     }
 
-    const systemPrompt = buildSystemPrompt(preferences, language);
+    const lastUserMessage = messages[messages.length - 1]?.content || '';
+    const systemPrompt = buildSystemPrompt({
+      lang: language,
+      tone: preferences.tone,
+      mood: preferences.mood,
+      mode: preferences.interaction,
+      lastUserMessage
+    });
     const finalMessages = ensureSystem(messages, systemPrompt);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");

@@ -25,9 +25,9 @@ const Chat = () => {
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [tone, setTone] = useState<string>("friendly");
-  const [mood, setMood] = useState<string>("neutral");
-  const [interaction, setInteraction] = useState<string>("advise");
+  const [tone, setTone] = useState("friendly");
+  const [mood, setMood] = useState("neutral");
+  const [interaction, setInteraction] = useState("advise");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const saveTimeout = useRef<NodeJS.Timeout>();
@@ -43,9 +43,9 @@ const Chat = () => {
         .single();
       
       if (prefs) {
-        setTone(prefs.tone || "friendly");
-        setMood(prefs.mood || "neutral");
-        setInteraction(prefs.interaction || "advise");
+        setTone(prefs.tone as string || "friendly");
+        setMood(prefs.mood as string || "neutral");
+        setInteraction(prefs.interaction as string || "advise");
       }
 
       const { data: msgs } = await supabase
