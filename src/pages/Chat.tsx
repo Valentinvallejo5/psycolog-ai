@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Send, User, Bot, Menu, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
@@ -25,9 +25,9 @@ const Chat = () => {
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
-  const [tone, setTone] = useState([50]);
-  const [mood, setMood] = useState([50]);
-  const [interaction, setInteraction] = useState([50]);
+  const [tone, setTone] = useState<string>("friendly");
+  const [mood, setMood] = useState<string>("neutral");
+  const [interaction, setInteraction] = useState<string>("advise");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const saveTimeout = useRef<NodeJS.Timeout>();
@@ -43,9 +43,9 @@ const Chat = () => {
         .single();
       
       if (prefs) {
-        setTone([prefs.tone]);
-        setMood([prefs.mood]);
-        setInteraction([prefs.interaction]);
+        setTone(prefs.tone || "friendly");
+        setMood(prefs.mood || "neutral");
+        setInteraction(prefs.interaction || "advise");
       }
 
       const { data: msgs } = await supabase
@@ -80,9 +80,9 @@ const Chat = () => {
     
     await supabase.from('slider_preferences').upsert({
       user_id: user.id,
-      tone: tone[0],
-      mood: mood[0],
-      interaction: interaction[0]
+      tone: tone,
+      mood: mood,
+      interaction: interaction
     });
   };
 
@@ -173,47 +173,65 @@ const Chat = () => {
           <div className="space-y-6">
             <div className="space-y-3">
               <Label className="text-base font-semibold">{t('chat_tone')}</Label>
-              <Slider
-                value={tone}
-                onValueChange={setTone}
-                max={100}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>{t('tone_friendly')}</span>
-                <span>{t('tone_professional')}</span>
-              </div>
+              <ToggleGroup type="single" value={tone} onValueChange={(value) => value && setTone(value)}>
+                <ToggleGroupItem value="friendly" className="flex-1">
+                  {t('tone_friendly')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="professional" className="flex-1">
+                  {t('tone_professional')}
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <p className="text-xs text-muted-foreground">{t('tone_desc')}</p>
             </div>
 
             <div className="space-y-3">
               <Label className="text-base font-semibold">{t('chat_mood')}</Label>
-              <Slider
-                value={mood}
-                onValueChange={setMood}
-                max={100}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>{t('mood_bad')}</span>
-                <span>{t('mood_good')}</span>
-              </div>
+              <ToggleGroup type="single" value={mood} onValueChange={(value) => value && setMood(value)} className="grid grid-cols-3 gap-2">
+                <ToggleGroupItem value="calm" className="text-sm">
+                  {t('mood_calm')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="neutral" className="text-sm">
+                  {t('mood_neutral')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="hopeful" className="text-sm">
+                  {t('mood_hopeful')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="tired" className="text-sm">
+                  {t('mood_tired')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="anxious" className="text-sm">
+                  {t('mood_anxious')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="sad" className="text-sm">
+                  {t('mood_sad')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="angry" className="text-sm">
+                  {t('mood_angry')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="overwhelmed" className="text-sm">
+                  {t('mood_overwhelmed')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="lonely" className="text-sm">
+                  {t('mood_lonely')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="unsure" className="text-sm col-span-3">
+                  {t('mood_unsure')}
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <p className="text-xs text-muted-foreground">{t('mood_desc')}</p>
             </div>
 
             <div className="space-y-3">
               <Label className="text-base font-semibold">{t('chat_interaction')}</Label>
-              <Slider
-                value={interaction}
-                onValueChange={setInteraction}
-                max={100}
-                step={1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span>{t('interaction_listen')}</span>
-                <span>{t('interaction_advise')}</span>
-              </div>
+              <ToggleGroup type="single" value={interaction} onValueChange={(value) => value && setInteraction(value)}>
+                <ToggleGroupItem value="advise" className="flex-1">
+                  {t('interaction_advise')}
+                </ToggleGroupItem>
+                <ToggleGroupItem value="listen" className="flex-1">
+                  {t('interaction_listen')}
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <p className="text-xs text-muted-foreground">{t('interaction_desc')}</p>
             </div>
           </div>
         </div>
