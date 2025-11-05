@@ -12,13 +12,13 @@ const steps = [
     title: "2. Customize",
     description: "Adjust tone, mood, and interaction style to match how you feel right now.",
     icon: "🎛️",
-    color: "from-pink-100 to-pink-200",
+    color: "from-purple-100 to-purple-200",
   },
   {
     title: "3. Start Your Journey",
     description: "Connect with your AI therapist 24/7. Real support, whenever you need it.",
     icon: "✨",
-    color: "from-indigo-100 to-indigo-200",
+    color: "from-purple-100 to-purple-200",
   },
 ];
 
