@@ -26,7 +26,7 @@ const Auth = () => {
   // Redirect if already logged in
   useEffect(() => {
     if (user) {
-      navigate('/chat');
+      navigate('/dashboard');
     }
   }, [user, navigate]);
 
@@ -66,7 +66,7 @@ const Auth = () => {
         toast({
           title: t('success_login'),
         });
-        navigate('/chat');
+        navigate('/dashboard');
       } else {
         const { error } = await supabase.auth.signUp({
           email: email.trim(),
@@ -84,7 +84,7 @@ const Auth = () => {
         toast({
           title: t('success_signup'),
         });
-        navigate('/chat');
+        navigate('/dashboard');
       }
     } catch (error: any) {
       toast({
@@ -103,7 +103,7 @@ const Auth = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/chat`
+          redirectTo: `${window.location.origin}/dashboard`
         }
       });
       

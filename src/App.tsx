@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Pricing from "./pages/Pricing";
 import Auth from "./pages/Auth";
 import Chat from "./pages/Chat";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/chat" element={<ProtectedRoute><Chat /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
