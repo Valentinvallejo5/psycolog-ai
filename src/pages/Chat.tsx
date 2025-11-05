@@ -238,35 +238,35 @@ const Chat = () => {
               </ToggleGroup>
               <p className="text-xs text-muted-foreground">{t('interaction_desc')}</p>
             </div>
+
+            {/* Back to Dashboard Button */}
+            <div className="pt-4 border-t border-border">
+              <Button
+                variant="outline"
+                className="w-full gap-2"
+                onClick={() => navigate('/dashboard')}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {language === 'es' ? 'Volver al Dashboard' : 'Back to Dashboard'}
+              </Button>
+            </div>
           </div>
         </div>
       </aside>
 
       {/* Main chat area */}
       <div className="flex-1 flex flex-col">
-        {/* Header with back button and sidebar toggle */}
-        <div className="h-14 border-b border-border bg-card flex items-center justify-between px-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="gap-2"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span className="hidden sm:inline">
-              {language === 'es' ? 'Volver al Dashboard' : 'Back to Dashboard'}
-            </span>
-          </Button>
-          
-          {!sidebarOpen && (
+        {/* Sidebar toggle for mobile */}
+        {!sidebarOpen && (
+          <div className="h-14 border-b border-border bg-card flex items-center px-6">
             <button
               onClick={() => setSidebarOpen(true)}
               className="text-muted-foreground hover:text-foreground"
             >
               <Menu className="h-5 w-5" />
             </button>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
