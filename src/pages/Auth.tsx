@@ -8,9 +8,9 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { authSchema, signupSchema, type AuthFormData } from "@/lib/validations";
-import { useTranslation, type Language } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import heroRobot from "@/assets/hero-robot.png";
-import { Globe, Brain, Check, X } from "lucide-react";
+import { Brain, Check, X } from "lucide-react";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
@@ -20,11 +20,10 @@ const Auth = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
-  const [language, setLanguage] = useState<Language>('es');
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
-  const t = useTranslation(language);
+  const { language, t } = useLanguage();
 
   // Redirect if already logged in
   useEffect(() => {
@@ -32,10 +31,6 @@ const Auth = () => {
       navigate('/dashboard');
     }
   }, [user, navigate]);
-
-  const toggleLanguage = () => {
-    setLanguage(prev => prev === 'es' ? 'en' : 'es');
-  };
 
   // Real-time password match validation
   useEffect(() => {
@@ -137,18 +132,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* Left Side - Form */}
-      <div className="flex items-center justify-center p-8 bg-gradient-to-br from-purple-50 to-pink-50 relative">
-        {/* Language Toggle */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={toggleLanguage}
-          className="absolute top-4 right-4"
-        >
-          <Globe className="h-5 w-5" />
-          <span className="ml-2 text-sm">{language.toUpperCase()}</span>
-        </Button>
-
+      <div className="flex items-center justify-center p-8 bg-gradient-to-br from-purple-50 to-pink-50">
         <Card className="w-full max-w-md p-8 space-y-6">
           {/* Logo and Brand */}
           <div className="flex flex-col items-center gap-3 mb-2">
