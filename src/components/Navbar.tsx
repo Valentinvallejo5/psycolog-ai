@@ -1,16 +1,24 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Brain, LogOut } from "lucide-react";
+import { Brain, LogOut, Globe } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Navbar = () => {
   const location = useLocation();
   const { user, signOut } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   
   const navLinks = [
-    { name: "Home", path: "/" },
+    { name: t('home'), path: "/" },
     { name: "Features", path: "/#features" },
-    { name: "Pricing", path: "/pricing" },
+    { name: t('pricing'), path: "/pricing" },
   ];
 
   return (
@@ -36,6 +44,30 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          {/* Language Selector */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm">
+                <Globe className="mr-2 h-4 w-4" />
+                {language.toUpperCase()}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="bg-background z-50">
+              <DropdownMenuItem 
+                onClick={() => setLanguage('es')}
+                className="cursor-pointer"
+              >
+                🇪🇸 Español
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => setLanguage('en')}
+                className="cursor-pointer"
+              >
+                🇬🇧 English
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           {user ? (
             <>
               <span className="text-sm text-muted-foreground hidden sm:inline truncate max-w-[200px]">
@@ -48,16 +80,16 @@ export const Navbar = () => {
                 className="gap-2"
               >
                 <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Log out</span>
+                <span className="hidden sm:inline">{t('logout')}</span>
               </Button>
             </>
           ) : (
             <>
               <Button variant="ghost" asChild>
-                <Link to="/auth?mode=login">Log In</Link>
+                <Link to="/auth?mode=login">{t('login')}</Link>
               </Button>
               <Button variant="hero" asChild>
-                <Link to="/auth">Sign Up</Link>
+                <Link to="/auth">{t('auth_signup')}</Link>
               </Button>
             </>
           )}

@@ -1,39 +1,42 @@
 import { Clock, Lock, User, Heart } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-
-const features = [
-  {
-    icon: Clock,
-    title: "24/7 Availability",
-    description: "Support whenever you need it.",
-  },
-  {
-    icon: Lock,
-    title: "Confidentiality",
-    description: "Your privacy is our priority.",
-  },
-  {
-    icon: User,
-    title: "Personalization",
-    description: "A therapy journey tailored to you.",
-  },
-  {
-    icon: Heart,
-    title: "Well-being Techniques",
-    description: "Integrated tools for mindfulness.",
-  },
-];
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const Features = () => {
+  const { t } = useLanguage();
+
+  const features = [
+    {
+      icon: Clock,
+      title: t('feature_availability'),
+      description: t('feature_availability_desc'),
+    },
+    {
+      icon: Lock,
+      title: t('feature_confidentiality'),
+      description: t('feature_confidentiality_desc'),
+    },
+    {
+      icon: User,
+      title: t('feature_personalization'),
+      description: t('feature_personalization_desc'),
+    },
+    {
+      icon: Heart,
+      title: t('feature_wellbeing'),
+      description: t('feature_wellbeing_desc'),
+    },
+  ];
+
   return (
     <section id="features" className="py-20 bg-background">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            A therapy journey tailored to you
+            {t('features_main_title')}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Discover a new way to access professional mental health support, designed to fit your lifestyle and needs.
+            {t('features_main_subtitle')}
           </p>
         </div>
 

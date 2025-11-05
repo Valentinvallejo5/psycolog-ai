@@ -5,15 +5,17 @@ import { Button } from '@/components/ui/button';
 import { MessageSquare, Heart, Wind, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Navbar } from '@/components/Navbar';
+import { useLanguage } from '@/hooks/useLanguage';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleLockedFeature = () => {
     toast({
-      title: "Funcionalidad aún no disponible",
+      title: t('dashboard_unavailable'),
       description: "Esta característica estará disponible próximamente.",
     });
   };
@@ -21,8 +23,8 @@ export default function Dashboard() {
   const features = [
     {
       id: 'chat',
-      title: 'Chat with psicolog.ia',
-      description: 'Talk through your thoughts anytime, day or night.',
+      title: t('dashboard_chat_title'),
+      description: t('dashboard_chat_desc'),
       icon: MessageSquare,
       buttonText: 'Start Chatting',
       available: true,
@@ -32,8 +34,8 @@ export default function Dashboard() {
     },
     {
       id: 'panic',
-      title: 'Immediate Panic Help',
-      description: 'Access guided exercises to help you find calm now.',
+      title: t('dashboard_panic_title'),
+      description: t('dashboard_panic_desc'),
       icon: Heart,
       buttonText: 'Get Help Now',
       available: false,
@@ -43,8 +45,8 @@ export default function Dashboard() {
     },
     {
       id: 'meditation',
-      title: 'Guided Meditation',
-      description: 'Explore our library of sessions for mindfulness and peace.',
+      title: t('dashboard_meditation_title'),
+      description: t('dashboard_meditation_desc'),
       icon: Wind,
       buttonText: 'Begin Meditation',
       available: false,
@@ -64,10 +66,10 @@ export default function Dashboard() {
           {/* Welcome Section */}
           <div className="text-center space-y-2">
             <h1 className="text-4xl font-bold text-foreground">
-              Welcome back, {user?.email?.split('@')[0]}
+              {t('dashboard_welcome')}, {user?.email?.split('@')[0]}
             </h1>
             <p className="text-xl text-muted-foreground">
-              Your safe space is ready.
+              {t('dashboard_ready')}
             </p>
           </div>
 

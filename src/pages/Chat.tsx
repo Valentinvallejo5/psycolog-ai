@@ -9,7 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { askAI } from "@/lib/aiClient";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useTranslation } from "@/lib/i18n";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Navbar } from "@/components/Navbar";
 
 interface Message {
@@ -21,8 +21,7 @@ interface Message {
 const Chat = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [language] = useState<'es' | 'en'>('es');
-  const t = useTranslation(language);
+  const { language, t } = useLanguage();
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");

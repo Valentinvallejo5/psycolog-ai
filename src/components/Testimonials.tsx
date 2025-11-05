@@ -1,35 +1,38 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Star } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-
-const testimonials = [
-  {
-    name: "Alex Doe",
-    initials: "AD",
-    rating: 5,
-    text: "This app has been a game-changer for my mental health. I can connect with my therapist anytime, and the integrated tools have been incredibly helpful.",
-  },
-  {
-    name: "Jamie Smith",
-    initials: "JS",
-    rating: 5,
-    text: "I was hesitant about online therapy, but psicolog.ia made it so easy and comfortable. I feel heard and supported.",
-  },
-  {
-    name: "Sam Wilson",
-    initials: "SW",
-    rating: 5,
-    text: "The platform is incredibly intuitive. Finding a therapist that fits my schedule and needs was surprisingly simple. Highly recommend it.",
-  },
-];
+import { useLanguage } from "@/hooks/useLanguage";
 
 export const Testimonials = () => {
+  const { t } = useLanguage();
+
+  const testimonials = [
+    {
+      name: "Alex Doe",
+      initials: "AD",
+      rating: 5,
+      text: t('testimonial_1'),
+    },
+    {
+      name: "Jamie Smith",
+      initials: "JS",
+      rating: 5,
+      text: t('testimonial_2'),
+    },
+    {
+      name: "Sam Wilson",
+      initials: "SW",
+      rating: 5,
+      text: t('testimonial_3'),
+    },
+  ];
+
   return (
     <section className="py-20 bg-muted">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Trusted by people like you
+            {t('testimonials_title')}
           </h2>
         </div>
 
