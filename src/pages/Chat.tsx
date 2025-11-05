@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Send, User, Bot, Menu, X } from "lucide-react";
+import { Send, User, Bot, Menu, X, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { askAI } from "@/lib/aiClient";
@@ -22,6 +23,7 @@ const Chat = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const { language, t } = useLanguage();
+  const navigate = useNavigate();
   
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -242,17 +244,29 @@ const Chat = () => {
 
       {/* Main chat area */}
       <div className="flex-1 flex flex-col">
-        {/* Sidebar toggle for mobile */}
-        {!sidebarOpen && (
-          <div className="h-14 border-b border-border bg-card flex items-center px-6">
+        {/* Header with back button and sidebar toggle */}
+        <div className="h-14 border-b border-border bg-card flex items-center justify-between px-6">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">
+              {language === 'es' ? 'Volver al Dashboard' : 'Back to Dashboard'}
+            </span>
+          </Button>
+          
+          {!sidebarOpen && (
             <button
               onClick={() => setSidebarOpen(true)}
               className="text-muted-foreground hover:text-foreground"
             >
               <Menu className="h-5 w-5" />
             </button>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
