@@ -9,7 +9,6 @@ export const Navbar = () => {
     { name: "Home", path: "/" },
     { name: "Features", path: "/#features" },
     { name: "Pricing", path: "/pricing" },
-    { name: "FAQ", path: "/#faq" },
   ];
 
   return (
