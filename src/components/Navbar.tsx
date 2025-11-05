@@ -15,6 +15,9 @@ export const Navbar = () => {
   const { user, signOut } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   
+  // Only show navigation links on home page
+  const isHomePage = location.pathname === '/';
+  
   const navLinks = [
     { name: t('home'), path: "/" },
     { name: "Features", path: "/#features" },
@@ -31,17 +34,19 @@ export const Navbar = () => {
           </div>
         </Link>
 
-        <div className="hidden md:flex items-center gap-6">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.path}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {link.name}
-            </a>
-          ))}
-        </div>
+        {isHomePage && (
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <a
+                key={link.name}
+                href={link.path}
+                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.name}
+              </a>
+            ))}
+          </div>
+        )}
 
         <div className="flex items-center gap-3">
           {/* Language Selector */}
