@@ -12,4 +12,12 @@ export const authSchema = z.object({
     .max(128, { message: 'Password must be less than 128 characters' }),
 });
 
+export const signupSchema = authSchema.extend({
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "error_password_mismatch",
+  path: ["confirmPassword"],
+});
+
 export type AuthFormData = z.infer<typeof authSchema>;
+export type SignupFormData = z.infer<typeof signupSchema>;

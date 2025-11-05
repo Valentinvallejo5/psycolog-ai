@@ -7,16 +7,18 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { authSchema, type AuthFormData } from "@/lib/validations";
+import { authSchema, signupSchema, type AuthFormData } from "@/lib/validations";
 import { useTranslation, type Language } from "@/lib/i18n";
 import heroRobot from "@/assets/hero-robot.png";
-import { Globe, Brain } from "lucide-react";
+import { Globe, Brain, Check, X } from "lucide-react";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const [isLogin, setIsLogin] = useState(searchParams.get('mode') === 'login');
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
   const [language, setLanguage] = useState<Language>('es');
   const navigate = useNavigate();
@@ -35,9 +37,22 @@ const Auth = () => {
     setLanguage(prev => prev === 'es' ? 'en' : 'es');
   };
 
+  // Real-time password match validation
+  useEffect(() => {
+    if (!isLogin && confirmPassword.length > 0) {
+      setPasswordsMatch(password === confirmPassword);
+    } else {
+      setPasswordsMatch(null);
+    }
+  }, [password, confirmPassword, isLogin]);
+
   const validateForm = (): boolean => {
     try {
-      authSchema.parse({ email, password });
+      if (isLogin) {
+        authSchema.parse({ email, password });
+      } else {
+        signupSchema.parse({ email, password, confirmPassword });
+      }
       return true;
     } catch (error: any) {
       const errorMessage = error.errors?.[0]?.message || t('error_auth');
@@ -213,6 +228,43 @@ const Auth = () => {
                 />
               </div>
 
+              {!isLogin && (
+                <div className="relative">
+                  <Label htmlFor="confirmPassword">{t('auth_confirm_password')}</Label>
+                  <div className="relative">
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      placeholder="••••••••"
+                      required
+                      disabled={loading}
+                      maxLength={128}
+                      className={
+                        passwordsMatch === null ? '' :
+                        passwordsMatch ? 'border-green-500 pr-10' : 
+                        'border-red-500 pr-10'
+                      }
+                    />
+                    {passwordsMatch !== null && (
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                        {passwordsMatch ? (
+                          <Check className="h-5 w-5 text-green-500" />
+                        ) : (
+                          <X className="h-5 w-5 text-red-500" />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {passwordsMatch === false && (
+                    <p className="text-sm text-red-500 mt-1">
+                      {t('auth_passwords_no_match')}
+                    </p>
+                  )}
+                </div>
+              )}
+
               <Button className="w-full" size="lg" type="submit" disabled={loading}>
                 {loading ? "..." : isLogin ? t('auth_login') : t('auth_signup')}
               </Button>
@@ -221,7 +273,11 @@ const Auth = () => {
             <p className="text-center text-sm text-muted-foreground">
               {isLogin ? t('auth_need_account') : t('auth_have_account')}{" "}
               <button 
-                onClick={() => setIsLogin(!isLogin)}
+                onClick={() => {
+                  setIsLogin(!isLogin);
+                  setConfirmPassword("");
+                  setPasswordsMatch(null);
+                }}
                 className="text-primary hover:underline"
                 disabled={loading}
               >
