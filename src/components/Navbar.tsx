@@ -54,7 +54,7 @@ export const Navbar = () => {
           ) : (
             <>
               <Button variant="ghost" asChild>
-                <Link to="/auth">Log In</Link>
+                <Link to="/auth?mode=login">Log In</Link>
               </Button>
               <Button variant="hero" asChild>
                 <Link to="/auth">Sign Up</Link>
