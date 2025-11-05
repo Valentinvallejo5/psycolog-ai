@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { authSchema, type AuthFormData } from "@/lib/validations";
 import { useTranslation, type Language } from "@/lib/i18n";
 import heroRobot from "@/assets/hero-robot.png";
-import { Globe } from "lucide-react";
+import { Globe, Brain } from "lucide-react";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -121,7 +121,7 @@ const Auth = () => {
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
       {/* Left Side - Form */}
-      <div className="flex items-center justify-center p-8 bg-background relative">
+      <div className="flex items-center justify-center p-8 bg-gradient-to-br from-purple-50 to-pink-50 relative">
         {/* Language Toggle */}
         <Button
           variant="ghost"
@@ -134,6 +134,14 @@ const Auth = () => {
         </Button>
 
         <Card className="w-full max-w-md p-8 space-y-6">
+          {/* Logo and Brand */}
+          <div className="flex flex-col items-center gap-3 mb-2">
+            <div className="flex items-center gap-2">
+              <Brain className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold text-foreground">psicolog.ia</span>
+            </div>
+          </div>
+
           <div className="text-center space-y-2">
             <h1 className="text-3xl font-bold text-foreground">{t('auth_welcome')}</h1>
             <p className="text-muted-foreground">{t('auth_subtitle')}</p>
