@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Brain, LogOut, Globe } from "lucide-react";
+import { Brain, LogOut, Globe, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import {
@@ -12,11 +12,13 @@ import {
 
 export const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { language, setLanguage, t } = useLanguage();
   
   // Only show navigation links on home page
   const isHomePage = location.pathname === '/';
+  const isChatPage = location.pathname === '/chat';
   
   const navLinks = [
     { name: t('home'), path: "/" },
@@ -46,6 +48,20 @@ export const Navbar = () => {
               </a>
             ))}
           </div>
+        )}
+
+        {isChatPage && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="gap-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            <span className="hidden sm:inline">
+              {language === 'es' ? 'Dashboard' : 'Dashboard'}
+            </span>
+          </Button>
         )}
 
         <div className="flex items-center gap-3">

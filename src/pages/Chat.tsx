@@ -165,16 +165,6 @@ const Chat = () => {
         } border-r border-border bg-card transition-all duration-300 overflow-hidden`}
       >
         <div className="p-6 space-y-8">
-          {/* Back to Dashboard Button */}
-          <Button
-            variant="outline"
-            className="w-full gap-2"
-            onClick={() => navigate('/dashboard')}
-          >
-            <ArrowLeft className="h-4 w-4" />
-            {language === 'es' ? 'Volver al Dashboard' : 'Back to Dashboard'}
-          </Button>
-
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold">Settings</h2>
             <button
