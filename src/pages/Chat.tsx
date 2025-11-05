@@ -3,13 +3,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Send, User, Bot, Menu, X, LogOut } from "lucide-react";
+import { Send, User, Bot, Menu, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { askAI } from "@/lib/aiClient";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useTranslation } from "@/lib/i18n";
+import { Navbar } from "@/components/Navbar";
 
 interface Message {
   id: number;
@@ -18,7 +19,7 @@ interface Message {
 }
 
 const Chat = () => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [language] = useState<'es' | 'en'>('es');
   const t = useTranslation(language);
@@ -152,8 +153,11 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Sidebar */}
+    <div className="flex flex-col h-screen bg-background">
+      <Navbar />
+      
+      <div className="flex flex-1 overflow-hidden">
+        {/* Sidebar */}
       <aside
         className={`${
           sidebarOpen ? "w-80" : "w-0"
@@ -239,29 +243,17 @@ const Chat = () => {
 
       {/* Main chat area */}
       <div className="flex-1 flex flex-col">
-        {/* Header */}
-        <header className="h-16 border-b border-border bg-card flex items-center justify-between px-6 gap-4">
-          <div className="flex items-center gap-4">
-            {!sidebarOpen && (
-              <button
-                onClick={() => setSidebarOpen(true)}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-            )}
-            <h1 className="text-xl font-semibold">psicolog.ia</h1>
+        {/* Sidebar toggle for mobile */}
+        {!sidebarOpen && (
+          <div className="h-14 border-b border-border bg-card flex items-center px-6">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
           </div>
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={signOut}
-            className="gap-2"
-          >
-            <LogOut className="h-4 w-4" />
-            <span className="hidden sm:inline">{language === 'es' ? 'Cerrar sesión' : 'Log out'}</span>
-          </Button>
-        </header>
+        )}
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
@@ -323,6 +315,7 @@ const Chat = () => {
             </Button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

@@ -2,11 +2,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, Wind, Lock, Brain, LogOut } from 'lucide-react';
+import { MessageSquare, Heart, Wind, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Navbar } from '@/components/Navbar';
 
 export default function Dashboard() {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -55,30 +56,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
-      {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Brain className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold text-primary">psicolog.ia</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground hidden sm:inline">
-              {user?.email}
-            </span>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={signOut}
-              className="gap-2"
-            >
-              <LogOut className="h-4 w-4" />
-              Log out
-            </Button>
-          </div>
-        </div>
-      </header>
-
+      <Navbar />
+      
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto space-y-8">

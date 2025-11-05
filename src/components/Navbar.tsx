@@ -1,9 +1,11 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Brain } from "lucide-react";
+import { Brain, LogOut } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Navbar = () => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   
   const navLinks = [
     { name: "Home", path: "/" },
@@ -34,12 +36,31 @@ export const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="ghost" asChild>
-            <Link to="/auth">Log In</Link>
-          </Button>
-          <Button variant="hero" asChild>
-            <Link to="/auth">Sign Up</Link>
-          </Button>
+          {user ? (
+            <>
+              <span className="text-sm text-muted-foreground hidden sm:inline truncate max-w-[200px]">
+                {user.email}
+              </span>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={signOut}
+                className="gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                <span className="hidden sm:inline">Log out</span>
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" asChild>
+                <Link to="/auth">Log In</Link>
+              </Button>
+              <Button variant="hero" asChild>
+                <Link to="/auth">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </nav>
