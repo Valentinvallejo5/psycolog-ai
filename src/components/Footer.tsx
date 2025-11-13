@@ -22,8 +22,8 @@ export const Footer = () => {
           <div>
             <h3 className="font-semibold mb-4">{t('footer_legal')}</h3>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer_terms')}</a></li>
-              <li><a href="#" className="hover:text-foreground transition-colors">{t('footer_privacy')}</a></li>
+              <li><Link to="/terms" className="hover:text-foreground transition-colors">{t('footer_terms')}</Link></li>
+              <li><Link to="/privacy" className="hover:text-foreground transition-colors">{t('footer_privacy')}</Link></li>
               <li><a href="#" className="hover:text-foreground transition-colors">{t('footer_contact')}</a></li>
             </ul>
           </div>
