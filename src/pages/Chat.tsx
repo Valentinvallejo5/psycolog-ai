@@ -77,8 +77,11 @@ const Chat = () => {
     loadData();
   }, [user, language]);
 
-  const savePreferences = async () => {
+  const savePreferences = async (retryCount = 0): Promise<void> => {
     if (!user) return;
+    
+    const maxRetries = 3;
+    const baseDelay = 1000; // 1 second
     
     const { data, error } = await supabase
       .from('slider_preferences')
@@ -98,16 +101,35 @@ const Chat = () => {
       );
 
     if (error) {
-      console.error('❌ Failed to save preferences:', error.message);
-      toast({
-        title: language === 'es' ? 'Error al guardar' : 'Failed to save',
-        description: language === 'es' 
-          ? 'No se pudieron guardar tus preferencias. Intenta de nuevo.' 
-          : 'Could not save your preferences. Please try again.',
-        variant: 'destructive',
-      });
+      console.error(`❌ Failed to save preferences (attempt ${retryCount + 1}/${maxRetries + 1}):`, error.message);
+      
+      // Retry with exponential backoff
+      if (retryCount < maxRetries) {
+        const delay = baseDelay * Math.pow(2, retryCount);
+        console.log(`⏳ Retrying in ${delay}ms...`);
+        
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return savePreferences(retryCount + 1);
+      } else {
+        // Max retries reached, show error toast
+        toast({
+          title: language === 'es' ? 'Error al guardar' : 'Failed to save',
+          description: language === 'es' 
+            ? 'No se pudieron guardar tus preferencias después de varios intentos.' 
+            : 'Could not save your preferences after multiple attempts.',
+          variant: 'destructive',
+        });
+      }
     } else {
       console.log('✅ Preferences saved successfully:', data);
+      
+      // Show success toast
+      toast({
+        title: language === 'es' ? 'Preferencias guardadas' : 'Preferences saved',
+        description: language === 'es' 
+          ? 'Tus ajustes han sido guardados correctamente.' 
+          : 'Your settings have been saved successfully.',
+      });
     }
   };
 
