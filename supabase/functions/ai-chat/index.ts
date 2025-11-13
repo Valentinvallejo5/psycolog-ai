@@ -5,6 +5,8 @@ const LOVABLE_ENDPOINT = "https://ai.gateway.lovable.dev/v1/chat/completions";
 const MODEL = "google/gemini-2.5-flash";
 const MAX_INPUT_CHARS = 10000;
 const DEFAULT_MAX_TOKENS = 1024;
+const MAX_MESSAGE_LENGTH = 10000;
+const ALLOWED_ROLES = ['user', 'assistant', 'system'];
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -70,6 +72,51 @@ function baseLanguageGuidance(lang: Language): string {
   return lang === 'es'
     ? 'Respondé en ESPAÑOL. Evitá diagnósticos; cuidá seguridad y límites. Derivá a recursos de ayuda si detectás riesgo.'
     : 'Respond in ENGLISH. Avoid diagnoses; prioritize safety and boundaries. Offer help resources if you detect risk.';
+}
+
+// ——— Message Validation & Sanitization ———
+function sanitizeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
+}
+
+function validateMessage(content: unknown, role: unknown): { valid: boolean; error?: string; sanitized?: string } {
+  // Validate content type
+  if (typeof content !== 'string') {
+    return { valid: false, error: 'Message content must be a string' };
+  }
+
+  // Validate role
+  if (typeof role !== 'string' || !ALLOWED_ROLES.includes(role)) {
+    return { valid: false, error: 'Invalid message role' };
+  }
+
+  // Trim and check empty
+  const trimmed = content.trim();
+  if (trimmed.length === 0) {
+    return { valid: false, error: 'Message content cannot be empty' };
+  }
+
+  // Check length
+  if (trimmed.length > MAX_MESSAGE_LENGTH) {
+    return { valid: false, error: `Message exceeds maximum length of ${MAX_MESSAGE_LENGTH} characters` };
+  }
+
+  // Validate character set (allow common unicode ranges)
+  const invalidChars = /[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/;
+  if (invalidChars.test(trimmed)) {
+    return { valid: false, error: 'Message contains invalid control characters' };
+  }
+
+  // Sanitize HTML entities
+  const sanitized = sanitizeHtml(trimmed);
+
+  return { valid: true, sanitized };
 }
 
 const safetyGuidance = 'Si detectás señales de auto-daño, ideación suicida, violencia o riesgo inminente: 1) valida con mucha contención, 2) evita instrucciones clínicas, 3) sugiere contactar apoyo humano inmediato (líneas de ayuda locales, amigos/familia de confianza, servicios de emergencia). Pregunta si está a salvo ahora.';
@@ -153,7 +200,27 @@ serve(async (req) => {
       });
     }
 
-    const inputChars = messages.map((m: any) => m?.content ?? "").join("").length;
+    // Validate and sanitize each message
+    const validatedMessages = [];
+    for (const msg of messages) {
+      const validation = validateMessage(msg.content, msg.role);
+      if (!validation.valid) {
+        console.error('Message validation failed:', validation.error);
+        return new Response(JSON.stringify({ 
+          error: "Invalid message format",
+          details: validation.error
+        }), { 
+          status: 400, 
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+        });
+      }
+      validatedMessages.push({
+        role: msg.role,
+        content: validation.sanitized
+      });
+    }
+
+    const inputChars = validatedMessages.map((m: any) => m?.content ?? "").join("").length;
     if (inputChars > MAX_INPUT_CHARS) {
       return new Response(JSON.stringify({ 
         text: "Tu mensaje es muy largo. Envíalo en partes o resume lo esencial. / Your message is too long. Send it in parts or summarize." 
@@ -185,7 +252,7 @@ serve(async (req) => {
       };
     }
 
-    const lastUserMessage = messages[messages.length - 1]?.content || '';
+    const lastUserMessage = validatedMessages[validatedMessages.length - 1]?.content || '';
     const systemPrompt = buildSystemPrompt({
       lang: language,
       tone: preferences.tone,
@@ -193,7 +260,7 @@ serve(async (req) => {
       mode: preferences.interaction,
       lastUserMessage
     });
-    const finalMessages = ensureSystem(messages, systemPrompt);
+    const finalMessages = ensureSystem(validatedMessages, systemPrompt);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -271,7 +338,8 @@ serve(async (req) => {
       });
     }
 
-    const userMessage = messages[messages.length - 1];
+    // Store validated and sanitized messages
+    const userMessage = validatedMessages[validatedMessages.length - 1];
     if (userMessage?.role === 'user') {
       await supabase.from('chat_messages').insert({
         user_id: userId,
@@ -280,10 +348,14 @@ serve(async (req) => {
       });
     }
 
+    // Validate and sanitize assistant response before storing
+    const assistantValidation = validateMessage(text, 'assistant');
+    const sanitizedResponse = assistantValidation.valid ? assistantValidation.sanitized : text;
+
     await supabase.from('chat_messages').insert({
       user_id: userId,
       role: 'assistant',
-      content: text
+      content: sanitizedResponse
     });
 
     const { data: subscription } = await supabase
