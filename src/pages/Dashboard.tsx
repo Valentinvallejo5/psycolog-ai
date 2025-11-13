@@ -2,10 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { MessageSquare, Heart, Wind, Lock } from 'lucide-react';
+import { Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Navbar } from '@/components/Navbar';
 import { useLanguage } from '@/hooks/useLanguage';
+import chatIllustration from '@/assets/chat-illustration.png';
+import panicIllustration from '@/assets/panic-illustration.png';
+import meditationIllustration from '@/assets/meditation-illustration.png';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -25,34 +28,28 @@ export default function Dashboard() {
       id: 'chat',
       title: t('dashboard_chat_title'),
       description: t('dashboard_chat_desc'),
-      icon: MessageSquare,
+      image: chatIllustration,
       buttonText: 'Start Chatting',
       available: true,
       action: () => navigate('/chat'),
-      color: 'bg-purple-100',
-      iconColor: 'text-purple-600',
     },
     {
       id: 'panic',
       title: t('dashboard_panic_title'),
       description: t('dashboard_panic_desc'),
-      icon: Heart,
+      image: panicIllustration,
       buttonText: 'Get Help Now',
       available: false,
       action: handleLockedFeature,
-      color: 'bg-pink-100',
-      iconColor: 'text-pink-600',
     },
     {
       id: 'meditation',
       title: t('dashboard_meditation_title'),
       description: t('dashboard_meditation_desc'),
-      icon: Wind,
+      image: meditationIllustration,
       buttonText: 'Begin Meditation',
       available: false,
       action: handleLockedFeature,
-      color: 'bg-purple-100',
-      iconColor: 'text-purple-600',
     },
   ];
 
@@ -76,7 +73,6 @@ export default function Dashboard() {
           {/* Feature Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
             {features.map((feature) => {
-              const Icon = feature.icon;
               return (
                 <Card 
                   key={feature.id} 
@@ -85,11 +81,15 @@ export default function Dashboard() {
                   }`}
                 >
                   <CardHeader className="space-y-4">
-                    <div className={`w-16 h-16 rounded-full ${feature.color} flex items-center justify-center mx-auto relative`}>
-                      <Icon className={`h-8 w-8 ${feature.iconColor}`} />
+                    <div className="w-32 h-32 mx-auto relative">
+                      <img 
+                        src={feature.image} 
+                        alt={feature.title}
+                        className="w-full h-full object-contain"
+                      />
                       {!feature.available && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-full">
-                          <Lock className="h-6 w-6 text-white" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
+                          <Lock className="h-8 w-8 text-white" />
                         </div>
                       )}
                     </div>
