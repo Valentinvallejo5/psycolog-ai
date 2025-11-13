@@ -80,12 +80,35 @@ const Chat = () => {
   const savePreferences = async () => {
     if (!user) return;
     
-    await supabase.from('slider_preferences').upsert({
-      user_id: user.id,
-      tone: tone,
-      mood: mood,
-      interaction: interaction
-    });
+    const { data, error } = await supabase
+      .from('slider_preferences')
+      .upsert(
+        [
+          {
+            user_id: user.id,
+            tone: tone,
+            mood: mood,
+            interaction: interaction,
+            updated_at: new Date().toISOString(),
+          }
+        ],
+        {
+          onConflict: 'user_id',
+        }
+      );
+
+    if (error) {
+      console.error('❌ Failed to save preferences:', error.message);
+      toast({
+        title: language === 'es' ? 'Error al guardar' : 'Failed to save',
+        description: language === 'es' 
+          ? 'No se pudieron guardar tus preferencias. Intenta de nuevo.' 
+          : 'Could not save your preferences. Please try again.',
+        variant: 'destructive',
+      });
+    } else {
+      console.log('✅ Preferences saved successfully:', data);
+    }
   };
 
   useEffect(() => {
