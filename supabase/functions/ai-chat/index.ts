@@ -123,15 +123,27 @@ serve(async (req) => {
     const authHeader = req.headers.get('Authorization');
     const token = authHeader?.replace('Bearer ', '');
 
+    if (!token) {
+      return new Response(JSON.stringify({ error: "Authentication required" }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
+    }
+
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    let userId: string | null = null;
-    if (token) {
-      const { data: { user } } = await supabase.auth.getUser(token);
-      userId = user?.id ?? null;
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    
+    if (authError || !user) {
+      return new Response(JSON.stringify({ error: "Invalid authentication" }), { 
+        status: 401, 
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      });
     }
+
+    const userId = user.id;
 
     const { messages, params } = await req.json();
     if (!Array.isArray(messages) || messages.length === 0) {
@@ -151,28 +163,26 @@ serve(async (req) => {
     let preferences = { tone: 'friendly' as ConversationTone, mood: 'neutral' as UserMood, interaction: 'advise' as InteractionMode };
     let language: Language = 'es';
 
-    if (userId) {
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('language_preference')
-        .eq('id', userId)
-        .single();
+    const { data: profileData } = await supabase
+      .from('profiles')
+      .select('language_preference')
+      .eq('id', userId)
+      .single();
 
-      language = (profileData?.language_preference as Language) || 'es';
+    language = (profileData?.language_preference as Language) || 'es';
 
-      const { data: prefData } = await supabase
-        .from('slider_preferences')
-        .select('tone, mood, interaction')
-        .eq('user_id', userId)
-        .single();
+    const { data: prefData } = await supabase
+      .from('slider_preferences')
+      .select('tone, mood, interaction')
+      .eq('user_id', userId)
+      .single();
 
-      if (prefData) {
-        preferences = {
-          tone: (prefData.tone as ConversationTone) || 'friendly',
-          mood: (prefData.mood as UserMood) || 'neutral',
-          interaction: (prefData.interaction as InteractionMode) || 'advise'
-        };
-      }
+    if (prefData) {
+      preferences = {
+        tone: (prefData.tone as ConversationTone) || 'friendly',
+        mood: (prefData.mood as UserMood) || 'neutral',
+        interaction: (prefData.interaction as InteractionMode) || 'advise'
+      };
     }
 
     const lastUserMessage = messages[messages.length - 1]?.content || '';
@@ -261,43 +271,41 @@ serve(async (req) => {
       });
     }
 
-    if (userId) {
-      const userMessage = messages[messages.length - 1];
-      if (userMessage?.role === 'user') {
-        await supabase.from('chat_messages').insert({
-          user_id: userId,
-          role: 'user',
-          content: userMessage.content
-        });
-      }
-
+    const userMessage = messages[messages.length - 1];
+    if (userMessage?.role === 'user') {
       await supabase.from('chat_messages').insert({
         user_id: userId,
-        role: 'assistant',
-        content: text
+        role: 'user',
+        content: userMessage.content
       });
+    }
 
-      const { data: subscription } = await supabase
-        .from('subscription_plans')
-        .select('plan')
+    await supabase.from('chat_messages').insert({
+      user_id: userId,
+      role: 'assistant',
+      content: text
+    });
+
+    const { data: subscription } = await supabase
+      .from('subscription_plans')
+      .select('plan')
+      .eq('user_id', userId)
+      .single();
+
+    if (subscription?.plan === 'free') {
+      const { count } = await supabase
+        .from('chat_messages')
+        .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
-        .single();
+        .eq('role', 'user');
 
-      if (subscription?.plan === 'free') {
-        const { count } = await supabase
-          .from('chat_messages')
-          .select('*', { count: 'exact', head: true })
-          .eq('user_id', userId)
-          .eq('role', 'user');
-
-        if (count && count >= 50) {
-          return new Response(JSON.stringify({
-            text,
-            meta: { provider: "lovable", model: MODEL, limit_reached: true }
-          }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-          });
-        }
+      if (count && count >= 50) {
+        return new Response(JSON.stringify({
+          text,
+          meta: { provider: "lovable", model: MODEL, limit_reached: true }
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
       }
     }
 
@@ -312,8 +320,7 @@ serve(async (req) => {
   } catch (e) {
     console.error("Server error:", e);
     return new Response(JSON.stringify({ 
-      error: "server_error", 
-      details: String(e) 
+      error: "server_error"
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
