@@ -1,85 +1,111 @@
-## 🛠️ psicologia – Implementation Plan
+## 🛠️ psicolog.ia – Implementation Plan
 
-### Step-by-step build sequence
+This plan assumes a Lovable Cloud project with:
 
-#### 🧱 Setup & Infrastructure
-- [ ] Create GitHub repo with `vite + react + ts` starter
-- [ ] Install Tailwind, shadcn/ui, and configure design tokens
-- [ ] Set up Supabase project: enable Auth and Postgres
-- [ ] Configure Google OAuth + email/password login
-- [ ] Connect frontend to Supabase via SDK
+- React + TypeScript frontend
+- Lovable managed backend (auth, database, storage)
+- OpenAI API for chat
+- Embedded YouTube videos for panic help and meditation
 
-#### 🎨 UI Foundation
-- [ ] Build mobile-first layout wrapper with page slots
-- [ ] Create base components: `Button`, `Input`, `Card`, `LangToggle`, `Slider`
-- [ ] Add bilingual support (EN + ES) using JSON i18n
-
-#### 📄 Public Pages (Pre-login)
-- [ ] Homepage: Hero section, CTA, features, testimonials, FAQ, signup form
-- [ ] Pricing page: Compare plans, show upgrade options
-- [ ] Auth pages: Register/Login with redirect to `/chat`
-
-#### 💬 Chat Interface MVP
-- [ ] Create chat panel with scrollable history
-- [ ] Add distinct AI vs. user bubbles
-- [ ] Add input field with send button (text only)
-- [ ] Integrate GPT-4 via backend proxy function
-
-#### 🎚️ Sidebar: Real-Time Controls
-- [ ] Build sliders: tone, mood, interaction mode
-- [ ] Sync values to Supabase session or local state
-- [ ] Dynamically inject values into system prompt
-
-#### 🔁 Persistence & Sync
-- [ ] Store slider preferences per user
-- [ ] Save chat sessions per login with timestamps
-- [ ] Load latest chat on login, persist session history
-
-#### 🚦 Freemium Plan Gating
-- [ ] Add `plan_type` metadata to users in Supabase
-- [ ] Restrict full tone/mood range to premium users
-- [ ] Show upsell CTAs for locked features
-
-#### ✅ Final Polish
-- [ ] Run accessibility sweep (keyboard, contrast, ARIA)
-- [ ] Translate all static content (EN/ES)
-- [ ] Add legal pages (Terms, Privacy)
-- [ ] Deploy to production (e.g. Vercel + Supabase)
+Focus: add a **dashboard hub** with three tools (chat, panic help, meditation) and **freemium limits** based on `plan_type`.
 
 ---
 
-### Timeline with checkpoints
+### 1. Setup and infrastructure
 
-| Week | Focus                                | Deliverable                        |
-|------|--------------------------------------|------------------------------------|
-| 1    | Project setup, auth, Supabase link   | Login & register flow live         |
-| 2    | Homepage + Pricing + Auth UI         | Public-facing MVP site             |
-| 3    | Chat UI with GPT-4 integration       | Functional AI chatbot              |
-| 4    | Sliders + real-time state logic      | Adaptive tone/mood chat behavior   |
-| 5    | Plan gating + memory storage         | Freemium working with persistence  |
-| 6    | Polish + QA + soft launch            | MVP complete, ready to market      |
+- [ ] Confirm Lovable Cloud project is configured with:
+  - Auth (email and optionally Google)
+  - Database tables for `users`, `chat_sessions` and new usage tracking for guided tools
 
----
+- [ ] Create or align shared UI primitives:
+  - `Button`, `Input`, `Card`, `LangToggle`, `Slider`, `Modal`
+  - `YouTubePlayer` component for safe YouTube embeds
 
-### Team roles & rituals
-
-#### 🧑‍💻 Team Roles
-- **Product Owner** – defines priorities, slider logic, and UX clarity
-- **Frontend Dev** – builds layout, components, and state management
-- **Backend Dev** – sets up Supabase, chat storage, prompt pipeline
-- **UX/UI Designer** – designs calming, mobile-first interface and icons
-- **Prompt Engineer (optional)** – fine-tunes AI personality + slider integration
-
-#### 🔁 Weekly Rituals
-- **Twice-weekly async standups** (Slack or Notion)
-- **Weekly design check-in** – review usability, update UI/UX
-- **Bi-weekly user testing** – test 3 real users, log top 3 issues
+- [ ] Set up basic i18n:
+  - JSON files for `en` and `es`
+  - User language stored on profile or in a settings table
 
 ---
 
-### Optional integrations & stretch goals
-- 🧾 **Stripe** – real payment flow for Monthly + Annual plans
-- 🧠 **GPT-4 Turbo** – cost-efficient memory-enabled model
-- 📊 **PostHog** – analytics on slider use, upgrade triggers
-- 🎙️ **Voice input** – future mood detection from tone
-- 🪄 **PWA install prompt** – mobile-native experience
+### 2. Public pages (pre-login)
+
+- [ ] Homepage `/`:
+  - Hero section explaining psicolog.ia as an AI mental health companion
+  - Feature highlights:
+    - 24/7 chat
+    - Panic help button (short grounding video)
+    - Guided meditation (5 minute reset)
+  - CTA: “Start free trial”
+
+- [ ] Pricing `/pricing`:
+  - Comparison table for Free vs Premium:
+    - Free:
+      - Limited panic help sessions per day
+      - Limited meditation sessions per day
+    - Premium:
+      - Unlimited sessions
+      - Memory and full sliders
+  - Clear “Upgrade now” button
+
+- [ ] Auth pages `/register`, `/login`:
+  - Email + password form, optional social login
+  - After success: redirect to `/dashboard`
+
+---
+
+### 3. Dashboard hub `/dashboard`
+
+- [ ] Create `/dashboard` route (private, auth required).
+- [ ] Layout:
+  - Welcome message, for example: “Welcome back, {name}”
+  - Three main `Card` components:
+    1. **Chat with psicolog.ia**
+       - Short description (emotional support chat).
+       - Button: “Start chatting” → navigate to `/chat`.
+
+    2. **Immediate Panic Help**
+       - Short description (1–2 minute grounding video).
+       - Button: “Get help now” → open panic help screen.
+
+    3. **Guided Meditation**
+       - Short description (5 minute meditation).
+       - Button: “Begin meditation” → open meditation screen.
+
+- [ ] Cards must:
+  - Follow design guidelines (soft colors, rounded corners, mobile-friendly).
+  - Show a small lock icon and “Upgrade to unlock unlimited sessions” hint when feature is blocked due to free limits.
+
+---
+
+### 4. Chat interface `/chat`
+
+- [ ] Implement chat UI:
+  - Scrollable message history
+  - Distinct styles for user vs AI `ChatBubble`
+  - Text input with send button
+
+- [ ] Connect to backend route that calls OpenAI:
+  - Include user language, tone and mood slider values in the system prompt.
+
+- [ ] Load user language on mount and answer in that language by default.
+
+---
+
+### 5. Guided tools via YouTube embeds
+
+#### 5.1 YouTube config
+
+- [ ] Create `src/config/guidedVideos.ts`:
+
+  ```ts
+  export const GUIDED_VIDEOS = {
+    panic: {
+      en: "sw7M0i_jL-s",    // 2-minute grounding exercise
+      es: "b4f1qqMDYk0",    // Calma tu ansiedad en 2 minutos
+    },
+    meditation: {
+      en: "inpok4MKVLM",    // 5-minute meditation (Goodful)
+      es: "LDZQH0Tp4IE",    // Meditación de 5 minutos en español
+    },
+  } as const;
+  ```
