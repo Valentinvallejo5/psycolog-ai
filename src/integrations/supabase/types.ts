@@ -68,6 +68,36 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_usage: {
+        Row: {
+          created_at: string | null
+          date: string
+          id: string
+          meditation_sessions_count: number
+          panic_sessions_count: number
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          meditation_sessions_count?: number
+          panic_sessions_count?: number
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          date?: string
+          id?: string
+          meditation_sessions_count?: number
+          panic_sessions_count?: number
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
