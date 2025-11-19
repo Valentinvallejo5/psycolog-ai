@@ -7,7 +7,7 @@ export const Hero = () => {
   const { t } = useLanguage();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-muted to-background py-20 md:py-32">
+    <section className="relative overflow-hidden bg-gradient-to-b from-muted to-background dark:from-zinc-900 dark:to-zinc-950 py-20 md:py-32">
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">

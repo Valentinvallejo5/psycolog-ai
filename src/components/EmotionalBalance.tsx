@@ -36,7 +36,7 @@ export const EmotionalBalance = () => {
   ];
 
   return (
-    <section className="py-20 bg-background">
+    <section className="py-20 bg-background dark:bg-zinc-950">
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16 max-w-3xl mx-auto">
@@ -55,7 +55,7 @@ export const EmotionalBalance = () => {
             return (
               <div
                 key={index}
-                className="flex gap-6 p-6 rounded-lg hover:bg-muted/50 transition-all duration-300 hover:scale-[1.02]"
+                className="flex gap-6 p-6 rounded-lg hover:bg-muted/50 dark:hover:bg-zinc-800/50 transition-all duration-300 hover:scale-[1.02]"
               >
                 {/* Icon */}
                 <div className={`flex-shrink-0 w-14 h-14 rounded-full ${benefit.iconBg} flex items-center justify-center`}>
