@@ -60,7 +60,7 @@ export default function Dashboard() {
         .select('panic_sessions_count, meditation_sessions_count')
         .eq('user_id', user.id)
         .eq('date', today)
-        .single();
+        .maybeSingle();
 
       setUsageData({
         panic_count: usage?.panic_sessions_count || 0,
@@ -81,14 +81,7 @@ export default function Dashboard() {
     }
 
     try {
-      const { data: authData } = await supabase.auth.getSession();
-      const token = authData.session?.access_token;
-
-      const response = await supabase.functions.invoke('start-panic-session', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await supabase.functions.invoke('start-panic-session');
 
       if (response.data?.allowed) {
         navigate('/panic');
@@ -118,14 +111,7 @@ export default function Dashboard() {
     }
 
     try {
-      const { data: authData } = await supabase.auth.getSession();
-      const token = authData.session?.access_token;
-
-      const response = await supabase.functions.invoke('start-meditation-session', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
+      const response = await supabase.functions.invoke('start-meditation-session');
 
       if (response.data?.allowed) {
         navigate('/meditation');
