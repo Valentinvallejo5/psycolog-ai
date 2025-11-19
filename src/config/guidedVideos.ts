@@ -1,5 +1,7 @@
-// TODO: Subir estos videos manualmente a Lovable Cloud Storage
-// Ver instrucciones en /docs/how-to-upload-videos.md
+// ⚠️ MIGRACIÓN A CLOUD STORAGE EN PROGRESO
+// Ver instrucciones detalladas en /docs/migracion_videos.md
+// Los videos deben subirse manualmente al bucket "videos" en Lovable Cloud
+
 const STORAGE_BASE_URL = "https://mncrcotezjyftmrsvzor.supabase.co/storage/v1/object/public/videos";
 
 export const GUIDED_VIDEOS = {
