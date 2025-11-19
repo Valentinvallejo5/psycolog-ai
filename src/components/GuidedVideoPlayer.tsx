@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { Play, Pause, SkipForward, SkipBack, Maximize, Minimize } from 'lucide-react';
+import { Play, Pause, SkipForward, SkipBack, Maximize, Minimize, Loader2 } from 'lucide-react';
 
 type GuidedVideoPlayerProps = {
   src: string;
@@ -17,6 +17,8 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   // Format time as MM:SS
   const formatTime = (seconds: number) => {
@@ -35,12 +37,25 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
       clearTimeout(hideControlsTimeoutRef.current);
     }
     
-    // Set new timeout to hide controls after 3 seconds
+    // Set new timeout to hide controls after 2.5 seconds
     hideControlsTimeoutRef.current = setTimeout(() => {
       if (isPlaying) {
         setShowControls(false);
       }
-    }, 3000);
+    }, 2500);
+  };
+
+  // Pause auto-hide when hovering over controls
+  const handleControlsMouseEnter = () => {
+    if (hideControlsTimeoutRef.current) {
+      clearTimeout(hideControlsTimeoutRef.current);
+    }
+  };
+
+  const handleControlsMouseLeave = () => {
+    if (isPlaying) {
+      handleUserActivity();
+    }
   };
 
   useEffect(() => {
@@ -73,11 +88,22 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
       setIsFullscreen(!!document.fullscreenElement);
     };
 
+    const handleWaiting = () => setIsBuffering(true);
+    const handleCanPlay = () => setIsBuffering(false);
+    const handleError = () => {
+      setHasError(true);
+      setIsBuffering(false);
+      console.error('Error loading video');
+    };
+
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('loadedmetadata', handleLoadedMetadata);
     video.addEventListener('ended', handleEnded);
     video.addEventListener('play', handlePlay);
     video.addEventListener('pause', handlePause);
+    video.addEventListener('waiting', handleWaiting);
+    video.addEventListener('canplay', handleCanPlay);
+    video.addEventListener('error', handleError);
     document.addEventListener('fullscreenchange', handleFullscreenChange);
 
     // Auto-play on mount
@@ -92,6 +118,9 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
       video.removeEventListener('ended', handleEnded);
       video.removeEventListener('play', handlePlay);
       video.removeEventListener('pause', handlePause);
+      video.removeEventListener('waiting', handleWaiting);
+      video.removeEventListener('canplay', handleCanPlay);
+      video.removeEventListener('error', handleError);
       document.removeEventListener('fullscreenchange', handleFullscreenChange);
       
       if (hideControlsTimeoutRef.current) {
@@ -117,6 +146,13 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
     
     video.currentTime = Math.max(0, Math.min(video.currentTime + seconds, video.duration));
     handleUserActivity();
+  };
+
+  const handleVideoClick = (e: React.MouseEvent) => {
+    // Only toggle if clicking on video, not on controls
+    if (e.target === videoRef.current || e.target === containerRef.current) {
+      togglePlayPause();
+    }
   };
 
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -152,14 +188,32 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
       className="relative w-full aspect-video rounded-2xl overflow-hidden bg-primary/10 shadow-lg group"
       onMouseMove={handleUserActivity}
       onTouchStart={handleUserActivity}
-      onClick={handleUserActivity}
+      onClick={handleVideoClick}
     >
       <video
         ref={videoRef}
         src={src}
         className="w-full h-full object-cover"
         playsInline
+        style={{ WebkitMediaControls: 'false' } as any}
       />
+
+      {/* Error State */}
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="text-center px-6">
+            <p className="text-white font-medium mb-2">No se pudo cargar el video</p>
+            <p className="text-white/70 text-sm">Por favor, intenta nuevamente más tarde</p>
+          </div>
+        </div>
+      )}
+
+      {/* Buffering Indicator */}
+      {isBuffering && !hasError && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <Loader2 className="w-12 h-12 text-primary animate-spin drop-shadow-lg" />
+        </div>
+      )}
       
       {/* Controls overlay */}
       <div 
@@ -181,14 +235,18 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
         )}
 
         {/* Bottom control bar */}
-        <div className="absolute bottom-0 left-0 right-0 bg-primary/90 backdrop-blur-sm">
+        <div 
+          className="absolute bottom-0 left-0 right-0 bg-black/30 backdrop-blur-md"
+          onMouseEnter={handleControlsMouseEnter}
+          onMouseLeave={handleControlsMouseLeave}
+        >
           {/* Progress bar */}
           <div 
-            className="h-1 bg-background/20 cursor-pointer hover:h-2 transition-all"
+            className="h-1 bg-white/20 cursor-pointer hover:h-2 transition-all"
             onClick={handleProgressClick}
           >
             <div 
-              className="h-full bg-primary-foreground transition-all duration-100"
+              className="h-full bg-primary transition-all duration-100"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -196,56 +254,56 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
           {/* Controls */}
           <div className="flex items-center justify-between px-4 py-3 gap-2">
             {/* Left: Brand */}
-            <div className="text-xs font-medium text-primary-foreground hidden sm:block">
+            <div className="text-xs font-medium text-white drop-shadow-lg hidden sm:block">
               psicolog.ia
             </div>
 
             {/* Center: Playback controls */}
             <div className="flex items-center gap-2 sm:gap-3 flex-1 justify-center">
               <button
-                onClick={() => skip(-10)}
-                className="p-2 rounded-full hover:bg-primary-foreground/20 transition-colors"
-                aria-label="Retroceder 10 segundos"
+                onClick={(e) => { e.stopPropagation(); skip(-5); }}
+                className="p-2 rounded-full hover:bg-primary/30 transition-colors duration-200"
+                aria-label="Retroceder 5 segundos"
               >
-                <SkipBack className="w-5 h-5 text-primary-foreground" />
+                <SkipBack className="w-5 h-5 text-white" />
               </button>
 
               <button
-                onClick={togglePlayPause}
-                className="p-2 rounded-full hover:bg-primary-foreground/20 transition-colors"
+                onClick={(e) => { e.stopPropagation(); togglePlayPause(); }}
+                className="p-2 rounded-full hover:bg-primary/30 transition-colors duration-200"
                 aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
               >
                 {isPlaying ? (
-                  <Pause className="w-6 h-6 text-primary-foreground" fill="currentColor" />
+                  <Pause className="w-6 h-6 text-white" fill="currentColor" />
                 ) : (
-                  <Play className="w-6 h-6 text-primary-foreground" fill="currentColor" />
+                  <Play className="w-6 h-6 text-white" fill="currentColor" />
                 )}
               </button>
 
               <button
-                onClick={() => skip(10)}
-                className="p-2 rounded-full hover:bg-primary-foreground/20 transition-colors"
-                aria-label="Adelantar 10 segundos"
+                onClick={(e) => { e.stopPropagation(); skip(5); }}
+                className="p-2 rounded-full hover:bg-primary/30 transition-colors duration-200"
+                aria-label="Adelantar 5 segundos"
               >
-                <SkipForward className="w-5 h-5 text-primary-foreground" />
+                <SkipForward className="w-5 h-5 text-white" />
               </button>
             </div>
 
             {/* Right: Time and fullscreen */}
             <div className="flex items-center gap-3">
-              <div className="text-xs text-primary-foreground font-medium whitespace-nowrap">
+              <div className="text-xs text-white font-medium whitespace-nowrap drop-shadow-lg">
                 {formatTime(currentTime)} / {formatTime(duration)}
               </div>
 
               <button
-                onClick={toggleFullscreen}
-                className="p-2 rounded-full hover:bg-primary-foreground/20 transition-colors"
+                onClick={(e) => { e.stopPropagation(); toggleFullscreen(); }}
+                className="p-2 rounded-full hover:bg-primary/30 transition-colors duration-200"
                 aria-label={isFullscreen ? 'Salir de pantalla completa' : 'Pantalla completa'}
               >
                 {isFullscreen ? (
-                  <Minimize className="w-5 h-5 text-primary-foreground" />
+                  <Minimize className="w-5 h-5 text-white" />
                 ) : (
-                  <Maximize className="w-5 h-5 text-primary-foreground" />
+                  <Maximize className="w-5 h-5 text-white" />
                 )}
               </button>
             </div>
