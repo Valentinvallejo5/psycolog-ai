@@ -1,28 +1,26 @@
-// ⚠️ MIGRACIÓN A CLOUD STORAGE EN PROGRESO
-// Ver instrucciones detalladas en /docs/migracion_videos.md
-// Los videos deben subirse manualmente al bucket "videos" en Lovable Cloud
-
-const STORAGE_BASE_URL = "https://mncrcotezjyftmrsvzor.supabase.co/storage/v1/object/public/videos";
+// Videos served from local public/videos/ directory
+// Cloud Storage migration prepared for future (bucket "videos" ready)
+// See /docs/migracion_videos.md for migration instructions when ready
 
 export const GUIDED_VIDEOS = {
   panic: {
-    en: `${STORAGE_BASE_URL}/ansiedadEN.mp4`,
-    es: `${STORAGE_BASE_URL}/ansiedadESP1.mp4`,
+    en: "/videos/ansiedadEN.mp4",
+    es: "/videos/ansiedadESP1.mp4",
   },
   meditation: {
-    en: `${STORAGE_BASE_URL}/meditacionEN1.mp4`,
-    es: `${STORAGE_BASE_URL}/meditacionES1.mp4`,
+    en: "/videos/meditacionEN1.mp4",
+    es: "/videos/meditacionES1.mp4",
   },
 } as const;
 
 // Additional meditation options available for future rotation
 export const MEDITATION_ALTERNATIVES = {
   en: [
-    `${STORAGE_BASE_URL}/meditacionEN1.mp4`,
-    `${STORAGE_BASE_URL}/meditacionEN2.mp4`
+    "/videos/meditacionEN1.mp4",
+    "/videos/meditacionEN2.mp4"
   ],
   es: [
-    `${STORAGE_BASE_URL}/meditacionES1.mp4`,
-    `${STORAGE_BASE_URL}/meditacionESP2.mp4`
+    "/videos/meditacionES1.mp4",
+    "/videos/meditacionESP2.mp4"
   ],
 } as const;
