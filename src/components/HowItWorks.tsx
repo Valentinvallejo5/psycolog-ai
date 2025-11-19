@@ -64,7 +64,7 @@ export const HowItWorks = () => {
               scale: 1.03,
               transition: { duration: 0.3, ease: "easeOut" }
             }}
-            className={`rounded-3xl shadow-xl p-8 text-center bg-gradient-to-br ${step.color} backdrop-blur-lg hover:shadow-2xl transition-shadow duration-300`}
+            className={`rounded-3xl shadow-xl p-8 text-center bg-gradient-to-br ${step.color} dark:from-zinc-800 dark:to-zinc-900 backdrop-blur-lg hover:shadow-2xl transition-shadow duration-300`}
           >
             <motion.div
               whileHover={{ rotate: [0, -5, 5, 0] }}
@@ -76,7 +76,7 @@ export const HowItWorks = () => {
             <h3 className="text-xl font-semibold mb-2 tracking-tight">
               {step.title}
             </h3>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               {step.description}
             </p>
           </motion.div>
