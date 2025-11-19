@@ -1,4 +1,4 @@
-import { GuidedVideoPlayer } from "@/components/GuidedVideoPlayer";
+import CustomVideoPlayer from "@/components/CustomVideoPlayer";
 import { GUIDED_VIDEOS } from "@/config/guidedVideos";
 import { Navbar } from "@/components/Navbar";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -40,7 +40,7 @@ export default function PanicHelp() {
               </p>
             </div>
 
-            <GuidedVideoPlayer src={videoSrc} />
+            <CustomVideoPlayer src={videoSrc} />
 
             <div className="bg-muted/50 rounded-lg p-4 border border-border">
               <p className="text-sm text-muted-foreground">
