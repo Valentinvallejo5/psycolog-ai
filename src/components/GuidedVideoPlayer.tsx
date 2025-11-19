@@ -45,6 +45,16 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
     }, 2500);
   };
 
+  // Hide controls immediately when mouse leaves video area
+  const handleMouseLeave = () => {
+    if (isPlaying) {
+      setShowControls(false);
+      if (hideControlsTimeoutRef.current) {
+        clearTimeout(hideControlsTimeoutRef.current);
+      }
+    }
+  };
+
   // Pause auto-hide when hovering over controls
   const handleControlsMouseEnter = () => {
     if (hideControlsTimeoutRef.current) {
@@ -187,6 +197,7 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
       ref={containerRef}
       className="relative w-full aspect-video rounded-2xl overflow-hidden bg-primary/10 shadow-lg group"
       onMouseMove={handleUserActivity}
+      onMouseLeave={handleMouseLeave}
       onTouchStart={handleUserActivity}
       onClick={handleVideoClick}
     >
@@ -242,13 +253,19 @@ export function GuidedVideoPlayer({ src, onEnd }: GuidedVideoPlayerProps) {
         >
           {/* Progress bar */}
           <div 
-            className="h-1 bg-white/20 cursor-pointer hover:h-2 transition-all"
+            className="h-1 bg-white/20 cursor-pointer hover:h-2 transition-all relative group/progress"
             onClick={handleProgressClick}
           >
             <div 
-              className="h-full bg-primary transition-all duration-100"
+              className="h-full bg-white transition-all duration-100 relative"
               style={{ width: `${progress}%` }}
-            />
+            >
+              {/* Thumb circle at the end of progress */}
+              <div 
+                className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-lg opacity-0 group-hover/progress:opacity-100 transition-opacity"
+                style={{ transform: 'translate(50%, -50%)' }}
+              />
+            </div>
           </div>
 
           {/* Controls */}
