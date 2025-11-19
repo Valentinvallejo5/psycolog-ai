@@ -1,4 +1,4 @@
-import { YouTubePlayer } from "@/components/YouTubePlayer";
+import { GuidedVideoPlayer } from "@/components/GuidedVideoPlayer";
 import { GUIDED_VIDEOS } from "@/config/guidedVideos";
 import { Navbar } from "@/components/Navbar";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -10,7 +10,7 @@ export default function PanicHelp() {
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   const lang = language === "es" ? "es" : "en";
-  const videoId = GUIDED_VIDEOS.panic[lang];
+  const videoSrc = GUIDED_VIDEOS.panic[lang];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
@@ -40,7 +40,7 @@ export default function PanicHelp() {
               </p>
             </div>
 
-            <YouTubePlayer videoId={videoId} />
+            <GuidedVideoPlayer src={videoSrc} />
 
             <div className="bg-muted/50 rounded-lg p-4 border border-border">
               <p className="text-sm text-muted-foreground">
