@@ -13,7 +13,7 @@ export default function PanicHelp() {
   const videoSrc = GUIDED_VIDEOS.panic[lang];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50 dark:from-zinc-900 dark:to-zinc-950">
       <Navbar />
       
       <main className="container mx-auto px-4 py-12">
