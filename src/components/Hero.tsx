@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { GradientButton } from "@/components/ui/gradient-button";
 import { Link } from "react-router-dom";
 import { HowItWorks } from "@/components/HowItWorks";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -24,16 +24,16 @@ export const Hero = () => {
               <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
                 {t('hero_main_subtitle')}
               </p>
-              <Button variant="hero" size="lg" asChild className="text-base">
+              <GradientButton asChild>
                 <Link to="/auth">{t('cta_start_trial')}</Link>
-              </Button>
+              </GradientButton>
             </div>
 
             <motion.div 
               initial={{ opacity: 0, scale: 0.8, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="relative h-[500px] rounded-lg overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5"
+              className="relative h-[500px] rounded-lg overflow-hidden"
             >
               <Spotlight
                 className="-top-40 left-0 md:left-60 md:-top-20"
