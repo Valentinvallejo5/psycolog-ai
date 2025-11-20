@@ -312,4 +312,89 @@ All colors MUST be HSL.
     --border-color-1: hsla(320, 75%, 90%, 0.2);
     --border-color-2: hsla(320, 50%, 90%, 0.75);
   }
+
+  /* Advanced button animations */
+  @keyframes grain {
+    0%, 100% {
+      transform: translate(0, 0);
+    }
+    10% {
+      transform: translate(-1%, -1%);
+    }
+    20% {
+      transform: translate(1%, 1%);
+    }
+    30% {
+      transform: translate(-2%, 1%);
+    }
+    40% {
+      transform: translate(2%, -1%);
+    }
+    50% {
+      transform: translate(-1%, 2%);
+    }
+    60% {
+      transform: translate(1%, -2%);
+    }
+    70% {
+      transform: translate(-1%, 1%);
+    }
+    80% {
+      transform: translate(2%, 1%);
+    }
+    90% {
+      transform: translate(1%, -1%);
+    }
+  }
+
+  @keyframes bloomPulse {
+    0%, 100% {
+      transform: scale(0.8);
+      filter: blur(20px) brightness(1);
+    }
+    50% {
+      transform: scale(1.1);
+      filter: blur(40px) brightness(1.3);
+    }
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: -100% 0;
+    }
+    100% {
+      background-position: 100% 0;
+    }
+  }
+
+  .click-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+    pointer-events: none;
+    width: 50px;
+    height: 50px;
+    margin-left: -25px;
+    margin-top: -25px;
+  }
+
+  .gradient-ripple {
+    background: radial-gradient(circle, hsl(var(--primary) / 0.8), transparent);
+  }
+
+  .bloom-ripple {
+    filter: blur(10px);
+  }
 }

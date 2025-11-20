@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Lock, MessageCircle, HeartPulse, Flower2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import chatIllustration from '@/assets/chat-illustration.png';
 import panicIllustration from '@/assets/panic-illustration.png';
 import meditationIllustration from '@/assets/meditation-illustration.png';
+import { AdvancedButton } from '@/components/ui/gradient-button';
 
 type UsageData = {
   panic_count: number;
@@ -242,15 +242,15 @@ export default function Dashboard() {
                         </Badge>
                       </div>
                     )}
-                    <Button 
+                    <AdvancedButton 
                       className="w-full"
                       onClick={feature.action}
                       disabled={loading}
-                      variant={feature.locked ? "outline" : "default"}
+                      size="medium"
                     >
                       {feature.locked && <Lock className="h-4 w-4 mr-2" />}
                       {feature.buttonText}
-                    </Button>
+                    </AdvancedButton>
                   </CardContent>
                 </Card>
               );

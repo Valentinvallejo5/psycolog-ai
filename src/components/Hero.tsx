@@ -1,4 +1,4 @@
-import { GradientButton } from "@/components/ui/gradient-button";
+import { AdvancedButton } from "@/components/ui/gradient-button";
 import { Link } from "react-router-dom";
 import { HowItWorks } from "@/components/HowItWorks";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -24,9 +24,9 @@ export const Hero = () => {
               <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
                 {t('hero_main_subtitle')}
               </p>
-              <GradientButton asChild>
-                <Link to="/auth">{t('cta_start_trial')}</Link>
-              </GradientButton>
+              <AdvancedButton onClick={() => window.location.href = '/auth'}>
+                {t('cta_start_trial')}
+              </AdvancedButton>
             </div>
 
             <motion.div 
