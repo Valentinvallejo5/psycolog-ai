@@ -79,7 +79,7 @@ serve(async (req) => {
     
     const { data: usage, error: usageError } = await supabase
       .from('daily_usage')
-      .select('meditation_sessions_count')
+      .select('meditation_sessions_count, panic_sessions_count')
       .eq('user_id', user.id)
       .eq('date', today)
       .single();
@@ -107,40 +107,24 @@ serve(async (req) => {
       );
     }
 
-    // Increment counter
-    if (!usage) {
-      // Create new record
-      const { error: insertError } = await supabase
-        .from('daily_usage')
-        .insert({
-          user_id: user.id,
-          date: today,
-          panic_sessions_count: 0,
-          meditation_sessions_count: 1
-        });
+    // Increment counter using UPSERT to avoid race conditions
+    const { error: upsertError } = await supabase
+      .from('daily_usage')
+      .upsert({
+        user_id: user.id,
+        date: today,
+        meditation_sessions_count: currentCount + 1,
+        panic_sessions_count: usage?.panic_sessions_count || 0
+      }, {
+        onConflict: 'user_id,date'
+      });
 
-      if (insertError) {
-        console.error('Insert error:', insertError);
-        return new Response(
-          JSON.stringify({ allowed: false, error: 'server_error' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-    } else {
-      // Update existing record
-      const { error: updateError } = await supabase
-        .from('daily_usage')
-        .update({ meditation_sessions_count: currentCount + 1 })
-        .eq('user_id', user.id)
-        .eq('date', today);
-
-      if (updateError) {
-        console.error('Update error:', updateError);
-        return new Response(
-          JSON.stringify({ allowed: false, error: 'server_error' }),
-          { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+    if (upsertError) {
+      console.error('Upsert error:', upsertError);
+      return new Response(
+        JSON.stringify({ allowed: false, error: 'server_error' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
     }
 
     return new Response(
