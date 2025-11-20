@@ -5,6 +5,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { BackgroundPaths } from "@/components/ui/background-paths";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
+import { motion } from "framer-motion";
 
 export const Hero = () => {
   const { t } = useLanguage();
@@ -28,7 +29,12 @@ export const Hero = () => {
               </Button>
             </div>
 
-            <div className="relative h-[500px] rounded-lg overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="relative h-[500px] rounded-lg overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/5"
+            >
               <Spotlight
                 className="-top-40 left-0 md:left-60 md:-top-20"
                 size={300}
@@ -37,7 +43,7 @@ export const Hero = () => {
                 scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
                 className="w-full h-full"
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
