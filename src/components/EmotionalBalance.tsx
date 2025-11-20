@@ -1,5 +1,6 @@
 import { Shield, Wind, Sparkles, Smartphone } from 'lucide-react';
 import { useLanguage } from '@/hooks/useLanguage';
+import { Typewriter } from '@/components/ui/typewriter-text';
 
 export const EmotionalBalance = () => {
   const { t } = useLanguage();
@@ -40,10 +41,15 @@ export const EmotionalBalance = () => {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center mb-16 max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground">
-            {t('emotional_balance_title')}
+          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-foreground dark:text-white">
+            <Typewriter 
+              text={t('emotional_balance_title')}
+              speed={50}
+              cursor=""
+              className="inline"
+            />
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-muted-foreground dark:text-gray-300">
             {t('emotional_balance_subtitle')}
           </p>
         </div>

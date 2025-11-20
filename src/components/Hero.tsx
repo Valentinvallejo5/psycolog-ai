@@ -6,6 +6,7 @@ import { BackgroundPaths } from "@/components/ui/background-paths";
 import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
+import { Typewriter } from "@/components/ui/typewriter-text";
 
 export const Hero = () => {
   const { t } = useLanguage();
@@ -21,8 +22,13 @@ export const Hero = () => {
                 {t('hero_main_title')}{" "}
                 <span className="text-primary">{t('hero_main_highlight')}</span>.
               </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
-                {t('hero_main_subtitle')}
+              <p className="text-lg md:text-xl text-muted-foreground dark:text-gray-300 max-w-xl">
+                <Typewriter 
+                  text={t('hero_main_subtitle')}
+                  speed={50}
+                  cursor=""
+                  className="inline"
+                />
               </p>
               <AdvancedButton onClick={() => window.location.href = '/auth'}>
                 {t('cta_start_trial')}
