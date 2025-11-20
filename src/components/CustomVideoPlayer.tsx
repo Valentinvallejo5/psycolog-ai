@@ -5,7 +5,10 @@ import {
   RotateCcw,
   RotateCw,
   Maximize2,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -20,6 +23,12 @@ const CustomVideoPlayer = ({ src }: { src: string }) => {
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [volume, setVolume] = useState(() => {
+    const saved = localStorage.getItem('videoVolume');
+    return saved ? parseFloat(saved) : 1;
+  });
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     if (!showControls) return;
@@ -31,23 +40,31 @@ const CustomVideoPlayer = ({ src }: { src: string }) => {
     const video = videoRef.current;
     if (!video) return;
 
+    video.volume = volume;
+
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
     const onTimeUpdate = () => setProgress(video.currentTime);
-    const onMetadata = () => setDuration(video.duration);
+    const onMetadata = () => {
+      setDuration(video.duration);
+      setIsLoading(false);
+    };
+    const onCanPlay = () => setIsLoading(false);
 
     video.addEventListener('play', onPlay);
     video.addEventListener('pause', onPause);
     video.addEventListener('timeupdate', onTimeUpdate);
     video.addEventListener('loadedmetadata', onMetadata);
+    video.addEventListener('canplay', onCanPlay);
 
     return () => {
       video.removeEventListener('play', onPlay);
       video.removeEventListener('pause', onPause);
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('loadedmetadata', onMetadata);
+      video.removeEventListener('canplay', onCanPlay);
     };
-  }, []);
+  }, [volume]);
 
   const togglePlay = () => {
     const video = videoRef.current;
@@ -78,6 +95,28 @@ const CustomVideoPlayer = ({ src }: { src: string }) => {
     }
   };
 
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const newMuted = !isMuted;
+    video.muted = newMuted;
+    setIsMuted(newMuted);
+  };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    localStorage.setItem('videoVolume', newVolume.toString());
+    const video = videoRef.current;
+    if (video) {
+      video.volume = newVolume;
+      if (newVolume > 0 && isMuted) {
+        video.muted = false;
+        setIsMuted(false);
+      }
+    }
+  };
+
   return (
     <div
       ref={containerRef}
@@ -85,13 +124,23 @@ const CustomVideoPlayer = ({ src }: { src: string }) => {
       onMouseMove={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
+          <div className="text-center space-y-4">
+            <div className="animate-pulse">
+              <span className="text-4xl text-violet-400">🧠</span>
+            </div>
+            <p className="text-sm text-gray-400 font-medium">Cargando video...</p>
+          </div>
+        </div>
+      )}
       <video
         ref={videoRef}
         src={src}
         className="w-full h-auto cursor-pointer"
         onClick={togglePlay}
         playsInline
-        muted
+        style={{ minHeight: isLoading ? '400px' : 'auto' }}
       />
 
       {showControls && (
@@ -119,19 +168,42 @@ const CustomVideoPlayer = ({ src }: { src: string }) => {
             }}
           />
 
-          <div className="flex items-center justify-center gap-6 mt-3">
-            <button onClick={() => skip(-5)} aria-label="Retroceder 5 segundos" className="hover:text-violet-300">
-              <RotateCcw size={24} />
-            </button>
-            <button onClick={togglePlay} aria-label="Reproducir o pausar" className="hover:text-violet-300">
-              {isPlaying ? <Pause size={28} /> : <Play size={28} />}
-            </button>
-            <button onClick={() => skip(5)} aria-label="Avanzar 5 segundos" className="hover:text-violet-300">
-              <RotateCw size={24} />
-            </button>
-            <button onClick={toggleFullscreen} aria-label="Pantalla completa" className="hover:text-violet-300">
-              <Maximize2 size={22} />
-            </button>
+          <div className="flex items-center justify-between mt-3">
+            <div className="flex items-center gap-3">
+              <button onClick={toggleMute} aria-label="Silenciar/Activar sonido" className="hover:text-violet-300">
+                {isMuted || volume === 0 ? <VolumeX size={22} /> : <Volume2 size={22} />}
+              </button>
+              <input
+                type="range"
+                min={0}
+                max={1}
+                step="0.1"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-20 accent-white cursor-pointer"
+                style={{
+                  appearance: 'none',
+                  height: '4px',
+                  borderRadius: '9999px',
+                  background: 'white',
+                }}
+              />
+            </div>
+            
+            <div className="flex items-center gap-6">
+              <button onClick={() => skip(-5)} aria-label="Retroceder 5 segundos" className="hover:text-violet-300">
+                <RotateCcw size={24} />
+              </button>
+              <button onClick={togglePlay} aria-label="Reproducir o pausar" className="hover:text-violet-300">
+                {isPlaying ? <Pause size={28} /> : <Play size={28} />}
+              </button>
+              <button onClick={() => skip(5)} aria-label="Avanzar 5 segundos" className="hover:text-violet-300">
+                <RotateCw size={24} />
+              </button>
+              <button onClick={toggleFullscreen} aria-label="Pantalla completa" className="hover:text-violet-300">
+                <Maximize2 size={22} />
+              </button>
+            </div>
           </div>
         </div>
       )}
