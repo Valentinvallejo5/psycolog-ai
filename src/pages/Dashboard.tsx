@@ -243,13 +243,16 @@ export default function Dashboard() {
                       </div>
                     )}
                     <AdvancedButton 
-                      className="w-full"
+                      className={`w-full ${feature.locked ? 'opacity-60 saturate-50' : ''}`}
                       onClick={feature.action}
                       disabled={loading}
                       size="medium"
+                      variant={feature.locked ? "secondary" : "primary"}
                     >
-                      {feature.locked && <Lock className="h-4 w-4 mr-2" />}
-                      {feature.buttonText}
+                      <span className="flex items-center justify-center gap-2">
+                        {feature.locked && <Lock className="h-4 w-4" />}
+                        {feature.buttonText}
+                      </span>
                     </AdvancedButton>
                   </CardContent>
                 </Card>
