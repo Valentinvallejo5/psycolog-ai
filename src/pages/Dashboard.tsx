@@ -243,7 +243,7 @@ export default function Dashboard() {
                       </div>
                     )}
                     <AdvancedButton 
-                      className={`w-full ${feature.locked ? 'opacity-60 saturate-50' : ''}`}
+                      className={`w-full ${feature.locked ? 'opacity-60 saturate-50 pointer-events-auto cursor-pointer [&_canvas]:opacity-0 [&_.button-glow]:hidden [&_.button-ripple]:hidden' : ''}`}
                       onClick={feature.action}
                       disabled={loading}
                       size="medium"
