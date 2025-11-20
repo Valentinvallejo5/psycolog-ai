@@ -2,14 +2,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { HowItWorks } from "@/components/HowItWorks";
 import { useLanguage } from "@/hooks/useLanguage";
-import { BackgroundPaths } from "@/components/ui/background-paths";
 
 export const Hero = () => {
   const { t } = useLanguage();
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-muted to-background dark:from-zinc-900 dark:to-zinc-950 py-20 md:py-32">
-      <BackgroundPaths />
       <div className="container mx-auto px-4">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
