@@ -13,6 +13,7 @@ import chatIllustration from '@/assets/chat-illustration.png';
 import panicIllustration from '@/assets/panic-illustration.png';
 import meditationIllustration from '@/assets/meditation-illustration.png';
 import { AdvancedButton } from '@/components/ui/gradient-button';
+import { MetalButton } from '@/components/ui/liquid-glass-button';
 
 type UsageData = {
   panic_count: number;
@@ -242,18 +243,28 @@ export default function Dashboard() {
                         </Badge>
                       </div>
                     )}
-                    <AdvancedButton 
-                      className={`w-full ${feature.locked ? 'opacity-60 saturate-50 pointer-events-auto cursor-pointer [&_canvas]:opacity-0 [&_.button-glow]:hidden [&_.button-ripple]:hidden' : ''}`}
-                      onClick={feature.action}
-                      disabled={loading}
-                      size="medium"
-                      variant={feature.locked ? "secondary" : "primary"}
-                    >
-                      <span className="flex items-center justify-center gap-2">
-                        {feature.locked && <Lock className="h-4 w-4" />}
+                    {feature.locked ? (
+                      <MetalButton 
+                        className="w-full"
+                        onClick={feature.action}
+                        disabled={loading}
+                        variant="primary"
+                      >
+                        <span className="flex items-center justify-center gap-2">
+                          <Lock className="h-4 w-4" />
+                          {feature.buttonText}
+                        </span>
+                      </MetalButton>
+                    ) : (
+                      <AdvancedButton 
+                        className="w-full"
+                        onClick={feature.action}
+                        disabled={loading}
+                        size="medium"
+                      >
                         {feature.buttonText}
-                      </span>
-                    </AdvancedButton>
+                      </AdvancedButton>
+                    )}
                   </CardContent>
                 </Card>
               );
