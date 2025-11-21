@@ -144,7 +144,7 @@ export default function Dashboard() {
       id: 'chat',
       title: t('dashboard_chat_title'),
       description: t('dashboard_chat_desc'),
-      image: chatIllustration,
+      video: 'URL_VIDEO_OSCURO', // Reemplazar con URL directa del video
       icon: MessageCircle,
       buttonText: t('dashboard_start_chat'),
       available: true,
@@ -154,7 +154,7 @@ export default function Dashboard() {
       id: 'panic',
       title: t('dashboard_panic_title'),
       description: t('dashboard_panic_desc'),
-      image: panicIllustration,
+      video: 'URL_VIDEO_OSCURO', // Reemplazar con URL directa del video
       icon: HeartPulse,
       buttonText: panicLimitReached ? t('dashboard_upgrade_unlock') : t('dashboard_get_help'),
       available: true,
@@ -166,7 +166,7 @@ export default function Dashboard() {
       id: 'meditation',
       title: t('dashboard_meditation_title'),
       description: t('dashboard_meditation_desc'),
-      image: meditationIllustration,
+      video: 'URL_VIDEO_CLARO', // Reemplazar con URL directa del video de meditación
       icon: Flower2,
       buttonText: meditationLimitReached ? t('dashboard_upgrade_unlock') : t('dashboard_begin_meditation'),
       available: true,
@@ -215,14 +215,17 @@ export default function Dashboard() {
                   }`}
                 >
                   <CardHeader className="space-y-4">
-                    <div className="w-32 h-32 mx-auto relative">
-                      <img 
-                        src={feature.image} 
-                        alt={feature.title}
-                        className="w-full h-full object-contain"
+                    <div className="w-32 h-32 mx-auto relative rounded-lg overflow-hidden">
+                      <video 
+                        src={feature.video} 
+                        loop
+                        autoPlay
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
                       />
                       {feature.locked && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                           <Lock className="h-8 w-8 text-white" />
                         </div>
                       )}
