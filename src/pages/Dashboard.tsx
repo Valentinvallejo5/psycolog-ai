@@ -232,39 +232,41 @@ export default function Dashboard() {
                       <CardTitle className="text-center">{feature.title}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="flex flex-col space-y-4 h-full">
                     <CardDescription className="text-center min-h-[48px]">
                       {feature.description}
                     </CardDescription>
-                    {feature.usageInfo && (
-                      <div className="text-center">
+                    <div className="text-center min-h-[24px]">
+                      {feature.usageInfo && (
                         <Badge variant={feature.locked ? "destructive" : "secondary"} className="text-xs">
                           {feature.usageInfo}
                         </Badge>
-                      </div>
-                    )}
-                    {feature.locked ? (
-                      <MetalButton 
-                        className="w-full"
-                        onClick={feature.action}
-                        disabled={loading}
-                        variant="primary"
-                      >
-                        <span className="flex items-center justify-center gap-2">
-                          <Lock className="h-4 w-4" />
+                      )}
+                    </div>
+                    <div className="mt-auto">
+                      {feature.locked ? (
+                        <MetalButton 
+                          className="w-full"
+                          onClick={feature.action}
+                          disabled={loading}
+                          variant="primary"
+                        >
+                          <span className="flex items-center justify-center gap-2">
+                            <Lock className="h-4 w-4" />
+                            {feature.buttonText}
+                          </span>
+                        </MetalButton>
+                      ) : (
+                        <AdvancedButton 
+                          className="w-full"
+                          onClick={feature.action}
+                          disabled={loading}
+                          size="medium"
+                        >
                           {feature.buttonText}
-                        </span>
-                      </MetalButton>
-                    ) : (
-                      <AdvancedButton 
-                        className="w-full"
-                        onClick={feature.action}
-                        disabled={loading}
-                        size="medium"
-                      >
-                        {feature.buttonText}
-                      </AdvancedButton>
-                    )}
+                        </AdvancedButton>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               );
