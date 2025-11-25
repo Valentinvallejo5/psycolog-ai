@@ -20,10 +20,16 @@ type InteractionMode = 'listen' | 'advise';
 type Language = 'es' | 'en';
 
 // ——— Mood & Mode Mapping Functions ———
-function mapMoodToState(mood: UserMood): 'good_mood' | 'bad_mood' {
+function mapMoodToState(mood: UserMood | string): 'good_mood' | 'bad_mood' {
+  // If already mapped, return as-is
+  if (mood === 'good_mood' || mood === 'bad_mood') {
+    return mood as 'good_mood' | 'bad_mood';
+  }
+  
+  // Map legacy 10-mood system to 2-mood system
   const goodMoods: UserMood[] = ['calm', 'neutral', 'hopeful'];
   const badMoods: UserMood[] = ['tired', 'anxious', 'sad', 'angry', 'overwhelmed', 'lonely', 'unsure'];
-  return goodMoods.includes(mood) ? 'good_mood' : 'bad_mood';
+  return goodMoods.includes(mood as UserMood) ? 'good_mood' : 'bad_mood';
 }
 
 function mapInteractionMode(mode: InteractionMode): 'just_listen' | 'give_advice' {

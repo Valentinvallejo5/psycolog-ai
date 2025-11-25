@@ -28,7 +28,7 @@ const Chat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [tone, setTone] = useState("friendly");
-  const [mood, setMood] = useState("neutral");
+  const [mood, setMood] = useState("good_mood");
   const [interaction, setInteraction] = useState("advise");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ const Chat = () => {
       
       if (prefs) {
         setTone(prefs.tone as string || "friendly");
-        setMood(prefs.mood as string || "neutral");
+        setMood(prefs.mood as string || "good_mood");
         setInteraction(prefs.interaction as string || "advise");
       }
 
@@ -236,36 +236,12 @@ const Chat = () => {
 
             <div className="space-y-3">
               <Label className="text-base font-semibold">{t('chat_mood')}</Label>
-              <ToggleGroup type="single" value={mood} onValueChange={(value) => value && setMood(value)} className="grid grid-cols-3 gap-2">
-                <ToggleGroupItem value="calm" className="text-sm">
-                  {t('mood_calm')}
+              <ToggleGroup type="single" value={mood} onValueChange={(value) => value && setMood(value)}>
+                <ToggleGroupItem value="good_mood" className="flex-1">
+                  {t('mood_good')}
                 </ToggleGroupItem>
-                <ToggleGroupItem value="neutral" className="text-sm">
-                  {t('mood_neutral')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="hopeful" className="text-sm">
-                  {t('mood_hopeful')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="tired" className="text-sm">
-                  {t('mood_tired')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="anxious" className="text-sm">
-                  {t('mood_anxious')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="sad" className="text-sm">
-                  {t('mood_sad')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="angry" className="text-sm">
-                  {t('mood_angry')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="overwhelmed" className="text-sm">
-                  {t('mood_overwhelmed')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="lonely" className="text-sm">
-                  {t('mood_lonely')}
-                </ToggleGroupItem>
-                <ToggleGroupItem value="unsure" className="text-sm col-span-3">
-                  {t('mood_unsure')}
+                <ToggleGroupItem value="bad_mood" className="flex-1">
+                  {t('mood_bad')}
                 </ToggleGroupItem>
               </ToggleGroup>
               <p className="text-xs text-muted-foreground">{t('mood_desc')}</p>
