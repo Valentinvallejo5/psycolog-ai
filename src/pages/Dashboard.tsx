@@ -261,7 +261,6 @@ export default function Dashboard() {
                           className="w-full"
                           onClick={feature.action}
                           disabled={loading}
-                          size="medium"
                         >
                           {feature.buttonText}
                         </AdvancedButton>
