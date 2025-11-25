@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Navbar } from "@/components/Navbar";
+import PulsatingDots from "@/components/ui/PulsatingDots";
 
 interface Message {
   id: number;
@@ -33,6 +34,7 @@ const Chat = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const saveTimeout = useRef<NodeJS.Timeout>();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -140,6 +142,11 @@ const Chat = () => {
       savePreferences();
     }, 1000);
   }, [tone, mood, interaction]);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -313,12 +320,11 @@ const Chat = () => {
                 <Bot className="w-5 h-5 text-primary animate-pulse" />
               </div>
               <Card className="p-4 bg-card">
-                <p className="text-muted-foreground">
-                  {language === 'es' ? 'Escribiendo...' : 'Typing...'}
-                </p>
+                <PulsatingDots />
               </Card>
             </div>
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}
