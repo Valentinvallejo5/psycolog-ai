@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Navbar } from "@/components/Navbar";
-import PulsatingDots from "@/components/ui/PulsatingDots";
+import RippleWaveLoader from "@/components/ui/ripple-wave-loader";
 
 interface Message {
   id: number;
@@ -320,7 +320,7 @@ const Chat = () => {
                 <Bot className="w-5 h-5 text-primary animate-pulse" />
               </div>
               <Card className="p-4 bg-card">
-                <PulsatingDots />
+                <RippleWaveLoader />
               </Card>
             </div>
           )}
