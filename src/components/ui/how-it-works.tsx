@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { UserPlus, Sliders, Sparkles } from "lucide-react";
 import type React from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface HowItWorksProps extends React.HTMLAttributes<HTMLElement> {}
 
@@ -50,38 +51,37 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({
   className,
   ...props
 }) => {
+  const { t } = useLanguage();
+  
   const stepsData = [
     {
       icon: <UserPlus className="h-6 w-6" />,
-      title: "1. Sign Up",
-      description:
-        "Create your account in seconds. Your privacy is our priority—no judgments, just support.",
+      title: t('how_step_1_title'),
+      description: t('how_step_1_desc'),
       benefits: [
-        "Quick and secure registration",
-        "Complete anonymity guaranteed",
-        "No credit card required to start",
+        t('how_step_1_benefit_1'),
+        t('how_step_1_benefit_2'),
+        t('how_step_1_benefit_3'),
       ],
     },
     {
       icon: <Sliders className="h-6 w-6" />,
-      title: "2. Customize",
-      description:
-        "Adjust tone, mood, and interaction style to match how you feel right now.",
+      title: t('how_step_2_title'),
+      description: t('how_step_2_desc'),
       benefits: [
-        "Personalized conversation style",
-        "Mood-aware responses",
-        "Adaptive interaction modes",
+        t('how_step_2_benefit_1'),
+        t('how_step_2_benefit_2'),
+        t('how_step_2_benefit_3'),
       ],
     },
     {
       icon: <Sparkles className="h-6 w-6" />,
-      title: "3. Start Your Journey",
-      description:
-        "Connect with your AI therapist 24/7. Real support, whenever you need it.",
+      title: t('how_step_3_title'),
+      description: t('how_step_3_desc'),
       benefits: [
-        "Available anytime, anywhere",
-        "Instant support when needed",
-        "Professional therapeutic approach",
+        t('how_step_3_benefit_1'),
+        t('how_step_3_benefit_2'),
+        t('how_step_3_benefit_3'),
       ],
     },
   ];
@@ -96,11 +96,10 @@ export const HowItWorks: React.FC<HowItWorksProps> = ({
         {/* Section Header */}
         <div className="mx-auto mb-16 max-w-4xl text-center">
           <h2 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            How it works
+            {t('how_it_works_title')}
           </h2>
           <p className="mt-4 text-lg text-muted-foreground">
-            Start your mental health journey in three simple steps. 
-            Personalized support designed around your needs.
+            {t('how_it_works_subtitle')}
           </p>
         </div>
 
