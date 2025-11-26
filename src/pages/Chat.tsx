@@ -270,14 +270,11 @@ const Chat = () => {
             </div>
 
             <Button 
-              onClick={() => {
-                savePreferences();
-                setSidebarOpen(false);
-              }}
+              onClick={() => setSidebarOpen(false)}
               className="w-full mt-6"
               variant="hero"
             >
-              {language === 'es' ? 'Guardar y comenzar' : 'Save and start'}
+              {language === 'es' ? 'Ocultar ajustes' : 'Hide settings'}
             </Button>
           </div>
         </div>
