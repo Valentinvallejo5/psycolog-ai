@@ -1,4 +1,4 @@
-import { Clock, Lock, User, Heart } from "lucide-react";
+import { Clock, Lock, User } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -21,11 +21,6 @@ export const Features = () => {
       title: t('feature_personalization'),
       description: t('feature_personalization_desc'),
     },
-    {
-      icon: Heart,
-      title: t('feature_wellbeing'),
-      description: t('feature_wellbeing_desc'),
-    },
   ];
 
   return (
@@ -40,7 +35,7 @@ export const Features = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {features.map((feature, index) => (
             <Card 
               key={index} 
