@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Navbar } from "@/components/Navbar";
 import RippleWaveLoader from "@/components/ui/ripple-wave-loader";
+import { getInitialBotMessage } from "@/lib/chatHelpers";
 
 interface Message {
   id: number;
@@ -66,12 +67,20 @@ const Chat = () => {
           content: m.content
         })));
       } else {
+        // Generar mensaje inicial dinámico basado en mood, tone e interaction
+        const mappedMood = ['calm', 'neutral', 'hopeful'].includes(mood) ? 'good_mood' : 'bad_mood';
+        const mappedMode = interaction === 'listen' ? 'just_listen' : 'give_advice';
+        const dynamicMessage = getInitialBotMessage(
+          mappedMood,
+          tone as 'friendly' | 'professional',
+          mappedMode,
+          language as 'es' | 'en'
+        );
+        
         setMessages([{
           id: 1,
           role: "assistant",
-          content: language === 'es' 
-            ? "¡Hola! ¿Cómo puedo asistirte hoy?" 
-            : "Hello! How can I assist you today?"
+          content: dynamicMessage
         }]);
       }
     };
@@ -124,14 +133,7 @@ const Chat = () => {
       }
     } else {
       console.log('✅ Preferences saved successfully:', data);
-      
-      // Show success toast
-      toast({
-        title: language === 'es' ? 'Preferencias guardadas' : 'Preferences saved',
-        description: language === 'es' 
-          ? 'Tus ajustes han sido guardados correctamente.' 
-          : 'Your settings have been saved successfully.',
-      });
+      // Toast de éxito eliminado intencionalmente para no interrumpir la experiencia emocional
     }
   };
 

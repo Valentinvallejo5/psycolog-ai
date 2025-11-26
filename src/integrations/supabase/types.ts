@@ -43,7 +43,11 @@ export type Database = {
           created_at: string | null
           id: string
           key_facts: string[] | null
+          last_message_at: string | null
           mood_trajectory: Json | null
+          session_interaction: string | null
+          session_mood: string | null
+          session_tone: string | null
           summary_text: string
           topic_tags: string[] | null
           user_id: string
@@ -52,7 +56,11 @@ export type Database = {
           created_at?: string | null
           id?: string
           key_facts?: string[] | null
+          last_message_at?: string | null
           mood_trajectory?: Json | null
+          session_interaction?: string | null
+          session_mood?: string | null
+          session_tone?: string | null
           summary_text: string
           topic_tags?: string[] | null
           user_id: string
@@ -61,7 +69,11 @@ export type Database = {
           created_at?: string | null
           id?: string
           key_facts?: string[] | null
+          last_message_at?: string | null
           mood_trajectory?: Json | null
+          session_interaction?: string | null
+          session_mood?: string | null
+          session_tone?: string | null
           summary_text?: string
           topic_tags?: string[] | null
           user_id?: string
