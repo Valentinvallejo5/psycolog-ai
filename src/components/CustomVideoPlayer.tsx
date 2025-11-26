@@ -8,7 +8,7 @@ import {
   Volume2,
   VolumeX,
 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
+import ClassicLoader from '@/components/ui/classic-loader';
 
 const formatTime = (seconds: number) => {
   const mins = Math.floor(seconds / 60);
@@ -126,12 +126,7 @@ const CustomVideoPlayer = ({ src }: { src: string }) => {
     >
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-zinc-900">
-          <div className="text-center space-y-4">
-            <div className="animate-pulse">
-              <span className="text-4xl text-violet-400">🧠</span>
-            </div>
-            <p className="text-sm text-gray-400 font-medium">Cargando video...</p>
-          </div>
+          <ClassicLoader />
         </div>
       )}
       <video
