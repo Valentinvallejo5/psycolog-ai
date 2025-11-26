@@ -372,6 +372,29 @@ serve(async (req) => {
       };
     }
 
+    // ——— Fase 5 & 6: Detección de nueva sesión y memoria de largo plazo ———
+    const { data: lastSummary } = await supabase
+      .from('conversation_summaries')
+      .select('*')
+      .eq('user_id', userId)
+      .order('last_message_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    let isNewSession = false;
+    let previousContext = '';
+
+    if (lastSummary && lastSummary.last_message_at) {
+      const lastMessageTime = new Date(lastSummary.last_message_at).getTime();
+      const now = Date.now();
+      const oneHourInMs = 60 * 60 * 1000;
+      
+      if (now - lastMessageTime > oneHourInMs) {
+        isNewSession = true;
+        previousContext = `\n\n[CONTEXT FROM PREVIOUS SESSION]:\nLast conversation summary: ${lastSummary.summary_text}\nUser's previous mood: ${lastSummary.session_mood}\nTopics discussed: ${(lastSummary.topic_tags || []).join(', ')}\n\nThe user is returning after >1 hour. Acknowledge their return warmly and offer to continue from where you left off or start fresh, based on their current mood.\n[END CONTEXT]\n`;
+      }
+    }
+
     const lastUserMessage = validatedMessages[validatedMessages.length - 1]?.content || '';
     const systemPrompt = buildSystemPrompt({
       lang: language,
@@ -379,7 +402,8 @@ serve(async (req) => {
       mood: preferences.mood,
       mode: preferences.interaction,
       lastUserMessage
-    });
+    }) + previousContext;
+    
     const finalMessages = ensureSystem(validatedMessages, systemPrompt);
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
@@ -476,6 +500,44 @@ serve(async (req) => {
       user_id: userId,
       role: 'assistant',
       content: sanitizedResponse
+    });
+
+    // ——— Fase 5: Generar y guardar summary de conversación ———
+    const conversationText = validatedMessages
+      .slice(-6) // Últimos 6 mensajes (3 turnos de conversación aprox)
+      .map(m => `${m.role}: ${m.content}`)
+      .join('\n');
+
+    const summaryText = conversationText.length > 300 
+      ? conversationText.substring(0, 300) + '...' 
+      : conversationText;
+
+    const topicTags: string[] = [];
+    const lowerText = conversationText.toLowerCase();
+    if (lowerText.includes('trabajo') || lowerText.includes('work')) topicTags.push('trabajo');
+    if (lowerText.includes('familia') || lowerText.includes('family')) topicTags.push('familia');
+    if (lowerText.includes('ansiedad') || lowerText.includes('anxiety')) topicTags.push('ansiedad');
+    if (lowerText.includes('sueño') || lowerText.includes('sleep')) topicTags.push('sueño');
+    if (lowerText.includes('relación') || lowerText.includes('relationship')) topicTags.push('relaciones');
+
+    const moodTrajectory = {
+      current_mood: preferences.mood,
+      timestamp: new Date().toISOString()
+    };
+
+    await supabase.from('conversation_summaries').upsert({
+      user_id: userId,
+      summary_text: summaryText,
+      topic_tags: topicTags.length > 0 ? topicTags : null,
+      mood_trajectory: moodTrajectory,
+      session_tone: preferences.tone,
+      session_mood: preferences.mood,
+      session_interaction: preferences.interaction,
+      last_message_at: new Date().toISOString(),
+      created_at: lastSummary?.created_at || new Date().toISOString()
+    }, { 
+      onConflict: 'user_id',
+      ignoreDuplicates: false 
     });
 
     const { data: subscription } = await supabase
