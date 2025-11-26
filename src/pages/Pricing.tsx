@@ -4,58 +4,60 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
-
-const plans = [
-  {
-    name: "Freemium",
-    price: "$0",
-    period: "",
-    description: "Start your mental health journey",
-    features: [
-      "Limited chatbot access",
-      "Basic tone customization",
-      "Mood tracking",
-      "24/7 availability",
-      "Private/anonymous",
-      "Secure chat",
-    ],
-    cta: "Try for Free",
-    highlighted: false,
-  },
-  {
-    name: "Monthly",
-    price: "$5.99",
-    period: "/month",
-    description: "Full access to all features",
-    features: [
-      "Unlimited chatbot access",
-      "Full customization",
-      "Long-term memory",
-      "Full access to wellness tools",
-      "Priority updates",
-    ],
-    cta: "Subscribe for $5.99/month",
-    highlighted: false,
-  },
-  {
-    name: "Annual",
-    price: "$49.99",
-    period: "/year",
-    badge: "Best Value",
-    description: "Save with annual billing",
-    features: [
-      "All Monthly benefits",
-      "Two months free",
-      "Priority support",
-      "Early access",
-      "Referral system",
-    ],
-    cta: "Choose Annual - $49.99/year",
-    highlighted: true,
-  },
-];
+import { useLanguage } from "@/hooks/useLanguage";
 
 const Pricing = () => {
+  const { t } = useLanguage();
+  
+  const plans = [
+    {
+      name: t('pricing_free_name'),
+      price: "$0",
+      period: "",
+      description: t('pricing_free_desc'),
+      features: [
+        t('pricing_free_feature_1'),
+        t('pricing_free_feature_2'),
+        t('pricing_free_feature_3'),
+        t('pricing_free_feature_4'),
+        t('pricing_free_feature_5'),
+        t('pricing_free_feature_6'),
+      ],
+      cta: t('pricing_free_cta'),
+      highlighted: false,
+    },
+    {
+      name: t('pricing_monthly_name'),
+      price: "$5.99",
+      period: "/month",
+      description: t('pricing_monthly_desc'),
+      features: [
+        t('pricing_monthly_feature_1'),
+        t('pricing_monthly_feature_2'),
+        t('pricing_monthly_feature_3'),
+        t('pricing_monthly_feature_4'),
+        t('pricing_monthly_feature_5'),
+      ],
+      cta: t('pricing_monthly_cta'),
+      highlighted: false,
+    },
+    {
+      name: t('pricing_annual_name'),
+      price: "$49.99",
+      period: "/year",
+      badge: t('pricing_annual_badge'),
+      description: t('pricing_annual_desc'),
+      features: [
+        t('pricing_annual_feature_1'),
+        t('pricing_annual_feature_2'),
+        t('pricing_annual_feature_3'),
+        t('pricing_annual_feature_4'),
+        t('pricing_annual_feature_5'),
+      ],
+      cta: t('pricing_annual_cta'),
+      highlighted: true,
+    },
+  ];
   return (
     <div className="min-h-screen">
       <Navbar />
@@ -63,10 +65,10 @@ const Pricing = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Find the Right Plan for Your Journey to Well-being
+              {t('pricing_title')}
             </h1>
             <p className="text-lg md:text-xl text-primary max-w-3xl mx-auto">
-              Start your path to a healthier mind with a plan that fits your needs.
+              {t('pricing_subtitle')}
             </p>
           </div>
 
