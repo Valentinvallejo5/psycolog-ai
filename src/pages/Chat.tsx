@@ -268,6 +268,17 @@ const Chat = () => {
               </ToggleGroup>
               <p className="text-xs text-muted-foreground">{t('interaction_desc')}</p>
             </div>
+
+            <Button 
+              onClick={() => {
+                savePreferences();
+                setSidebarOpen(false);
+              }}
+              className="w-full mt-6"
+              variant="hero"
+            >
+              {language === 'es' ? 'Guardar y comenzar' : 'Save and start'}
+            </Button>
           </div>
         </div>
       </aside>
@@ -317,13 +328,11 @@ const Chat = () => {
             </div>
           ))}
           {isLoading && (
-            <div className="flex gap-4 justify-start">
-              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="flex gap-4 justify-start items-center px-4 py-2">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <Bot className="w-5 h-5 text-primary animate-pulse" />
               </div>
-              <Card className="p-4 bg-card">
-                <RippleWaveLoader />
-              </Card>
+              <RippleWaveLoader />
             </div>
           )}
           <div ref={messagesEndRef} />

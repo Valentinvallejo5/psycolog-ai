@@ -2,21 +2,19 @@ import { motion } from 'framer-motion';
 
 export default function RippleWaveLoader() {
   return (
-    <div className="flex items-center justify-center space-x-1">
-      {[...Array(7)].map((_, index) => (
+    <div className="flex items-center space-x-[2px]">
+      {[...Array(5)].map((_, i) => (
         <motion.div
-          key={index}
-          className="h-8 w-2 rounded-full bg-[#B388EB]"
+          key={i}
+          className="h-4 w-[3px] rounded-full bg-[#B388EB]"
           animate={{
-            scaleY: [0.5, 1.5, 0.5],
-            scaleX: [1, 0.8, 1],
-            translateY: ['0%', '-15%', '0%'],
+            scaleY: [0.6, 1.4, 0.6],
           }}
           transition={{
             duration: 1,
             repeat: Infinity,
-            ease: 'easeInOut',
-            delay: index * 0.1,
+            ease: "easeInOut",
+            delay: i * 0.1,
           }}
         />
       ))}
