@@ -7,11 +7,9 @@ import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { Typewriter } from "@/components/ui/typewriter-text";
-import { useTheme } from "@/contexts/ThemeContext";
 
 export const Hero = () => {
   const { t } = useLanguage();
-  const { isDark } = useTheme();
 
   return (
     <>
@@ -49,7 +47,7 @@ export const Hero = () => {
               />
               <SplineScene 
                 scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
-                className={`w-full h-full transition-all duration-300 ${!isDark ? 'invert brightness-110' : ''}`}
+                className="w-full h-full"
               />
             </motion.div>
           </div>
