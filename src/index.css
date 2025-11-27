@@ -351,6 +351,15 @@ All colors MUST be HSL.
       --stop-5 0.5s;
   }
 
+  /* Light mode: colores más claros y vibrantes */
+  :root .gradient-button {
+    --color-1: #f5e6ff;
+    --color-2: #e4c1f9;
+    --color-3: #d896ff;
+    --color-4: #be95c4;
+    --color-5: #9d4edd;
+  }
+
   .gradient-button::before {
     content: '';
     position: absolute;
@@ -385,6 +394,17 @@ All colors MUST be HSL.
     --stop-3: 21.44%;
     --stop-4: 71.34%;
     --stop-5: 85.76%;
+  }
+
+  /* Light mode hover: colores cálidos y vibrantes */
+  :root .gradient-button:hover {
+    --color-1: #ffd6e8;
+    --color-2: #ffb3d9;
+    --color-3: #ff9eca;
+    --color-4: #d896ff;
+    --color-5: #9d4edd;
+    --border-color-1: hsla(320, 75%, 70%, 0.3);
+    --border-color-2: hsla(280, 75%, 65%, 0.8);
   }
 
   .gradient-button-variant {
