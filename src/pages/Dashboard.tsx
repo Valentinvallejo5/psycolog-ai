@@ -215,11 +215,11 @@ export default function Dashboard() {
                   }`}
                 >
                   <CardHeader className="space-y-4">
-                    <div className="w-32 h-32 mx-auto relative">
+                    <div className="w-40 h-40 mx-auto relative">
                       <img 
                         src={feature.image} 
                         alt={feature.title}
-                        className="w-full h-full object-contain rounded-xl"
+                        className="w-full h-full object-contain rounded-2xl"
                       />
                       {feature.locked && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
