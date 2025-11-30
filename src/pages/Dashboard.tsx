@@ -219,7 +219,7 @@ export default function Dashboard() {
                       <img 
                         src={feature.image} 
                         alt={feature.title}
-                        className="w-full h-full object-contain"
+                        className="w-full h-full object-contain rounded-xl"
                       />
                       {feature.locked && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
