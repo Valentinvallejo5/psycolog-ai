@@ -247,30 +247,27 @@ export default function Dashboard() {
                   <CardContent className="flex flex-col flex-1 pt-0">
                     {/* Section A + B: description + pill with consistent heights */}
                     <div className="flex flex-col flex-1">
-                      {/* Section A: description block with shared min-height, bottom-aligned for same baseline */}
-                      <div className="min-h-[96px] flex items-end justify-center text-center">
+                      {/* Section A: description block with shared min-height */}
+                      <div className="min-h-[80px] flex items-start justify-center text-center">
                         <CardDescription className="text-center">
                           {feature.description}
                         </CardDescription>
                       </div>
-
+                      
                       {/* Section B: pill, always reserves space even if empty */}
-                      <div className="mt-3 min-h-[40px] flex items-center justify-center">
+                      <div className="mt-3 min-h-[32px] flex items-center justify-center">
                         {feature.usageInfo && (
-                          <Badge
-                            variant={feature.locked ? "destructive" : "secondary"}
-                            className="text-xs"
-                          >
+                          <Badge variant={feature.locked ? "destructive" : "secondary"} className="text-xs">
                             {feature.usageInfo}
                           </Badge>
                         )}
                       </div>
                     </div>
-
+                    
                     {/* Section C: CTA button anchored at the bottom */}
                     <div className="mt-6">
                       {feature.locked ? (
-                        <MetalButton
+                        <MetalButton 
                           className="w-full"
                           onClick={feature.action}
                           disabled={loading}
@@ -282,7 +279,7 @@ export default function Dashboard() {
                           </span>
                         </MetalButton>
                       ) : (
-                        <AdvancedButton
+                        <AdvancedButton 
                           className="w-full"
                           onClick={feature.action}
                           disabled={loading}
