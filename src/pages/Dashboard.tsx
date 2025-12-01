@@ -215,11 +215,11 @@ export default function Dashboard() {
                   }`}
                 >
                   <CardHeader className="space-y-4">
-                    <div className="w-48 h-60 mx-auto relative p-4 rounded-3xl bg-gradient-to-br from-[#C9A6FF]/30 to-[#E8D9FF]/20 backdrop-blur-sm shadow-lg shadow-[#C9A6FF]/20 flex items-center justify-center">
+                    <div className="w-40 h-44 mx-auto relative p-4 rounded-3xl bg-gradient-to-br from-[#C9A6FF]/30 to-[#E8D9FF]/20 backdrop-blur-sm shadow-lg shadow-[#C9A6FF]/20 flex items-end justify-center">
                       <img 
                         src={feature.image} 
                         alt={feature.title}
-                        className="max-w-full max-h-full object-contain"
+                        className="max-w-full max-h-full object-contain object-bottom"
                       />
                       {feature.locked && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-3xl">
