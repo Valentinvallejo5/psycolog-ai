@@ -69,35 +69,29 @@ export const Hero = () => {
             >
               {/* Burbuja de diálogo de Archie */}
               {archieMessage && (
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, ease: "easeOut" }}
-                  className="
-                    absolute z-10
-                    max-md:top-full max-md:mt-4 max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-[280px]
-                    md:left-full md:ml-6 md:top-[80px] md:w-[320px]
-                    bg-[#b18cff]/80 text-white
-                    border border-[#b18cff]/40
-                    backdrop-blur-lg
-                    rounded-2xl p-4 shadow-xl
-                    before:content-[''] before:absolute before:left-[-8px] before:top-6
-                    before:w-0 before:h-0 
-                    before:border-t-[8px] before:border-t-transparent
-                    before:border-b-[8px] before:border-b-transparent
-                    before:border-r-[8px] before:border-r-[#b18cff]/80
-                    max-md:before:hidden
-                  "
-                >
+                <div className="
+                  absolute z-10
+                  max-md:top-full max-md:mt-4 max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-[280px]
+                  md:top-[80px] md:right-6 md:left-auto md:translate-x-0 md:w-[320px]
+                  bg-card/95 backdrop-blur-sm
+                  border border-border/50
+                  rounded-2xl p-4 shadow-xl
+                  before:content-[''] before:absolute before:-left-2 before:top-6
+                  before:w-0 before:h-0 
+                  before:border-t-[8px] before:border-t-transparent
+                  before:border-b-[8px] before:border-b-transparent
+                  before:border-r-[8px] before:border-r-card
+                  max-md:before:hidden
+                ">
                   <TypingAnimation 
                     key={archieMessage}
                     text={archieMessage}
                     duration={60}
-                    className="text-sm md:text-base font-medium leading-relaxed text-white"
+                    className="text-sm md:text-base font-medium leading-relaxed"
                   />
-                </motion.div>
+                </div>
               )}
-
+              
               <Spotlight
                 className="-top-40 left-0 md:left-60 md:-top-20"
                 size={300}
