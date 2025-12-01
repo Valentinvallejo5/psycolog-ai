@@ -160,6 +160,13 @@ export const translations = {
     pricing_annual_feature_4: 'Acceso anticipado',
     pricing_annual_feature_5: 'Sistema de referencias',
     pricing_annual_cta: 'Elegir anual - $49.99/año',
+    // Archie Greetings
+    archie_greeting_guest: 'Hola, soy Archie, tu mental coach. Yo voy a ser quien te acompañe a tu nuevo espacio seguro.',
+    archie_greeting_user_1: 'Hola, soy Archie. Bienvenido de nuevo, {{user}}.',
+    archie_greeting_user_2: '¿Cómo estás hoy, {{user}}? Estoy acá para ayudarte.',
+    archie_greeting_user_3: 'Tu espacio seguro está listo, {{user}}. ¿Qué te gustaría hacer?',
+    archie_greeting_user_4: 'Hola {{user}}, ¿te guío en una meditación o preferís hablar conmigo?',
+    archie_greeting_user_5: 'Archie está acá para vos, {{user}}. Un paso a la vez.',
   },
   en: {
     // Navbar
@@ -320,6 +327,13 @@ export const translations = {
     pricing_annual_feature_4: 'Early access',
     pricing_annual_feature_5: 'Referral system',
     pricing_annual_cta: 'Choose Annual - $49.99/year',
+    // Archie Greetings
+    archie_greeting_guest: "Hi, I'm Archie, your mental coach. I'll be the one to guide you through your new safe space.",
+    archie_greeting_user_1: "Hi, I'm Archie. Welcome back, {{user}}.",
+    archie_greeting_user_2: "How are you today, {{user}}? I'm here to support you.",
+    archie_greeting_user_3: "Your safe space is ready, {{user}}. What would you like to do?",
+    archie_greeting_user_4: "Hey {{user}}, want to start with a meditation or just chat?",
+    archie_greeting_user_5: "Archie's here for you, {{user}}. One step at a time.",
   }
 };
 

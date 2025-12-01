@@ -7,9 +7,35 @@ import { SplineScene } from "@/components/ui/splite";
 import { Spotlight } from "@/components/ui/spotlight";
 import { motion } from "framer-motion";
 import { Typewriter } from "@/components/ui/typewriter-text";
+import { TypingAnimation } from "@/components/ui/typing-animation";
+import { useAuth } from "@/hooks/useAuth";
+import { useMemo } from "react";
+import { getUserDisplayName } from "@/lib/chatHelpers";
 
 export const Hero = () => {
-  const { t } = useLanguage();
+  const { user, loading } = useAuth();
+  const { language, t } = useLanguage();
+
+  const archieMessage = useMemo(() => {
+    if (loading) return '';
+    
+    if (!user) {
+      // Usuario NO logueado: frase fija
+      return t('archie_greeting_guest');
+    }
+    
+    // Usuario logueado: frase aleatoria personalizada
+    const userName = getUserDisplayName(user);
+    const greetings = [
+      t('archie_greeting_user_1'),
+      t('archie_greeting_user_2'),
+      t('archie_greeting_user_3'),
+      t('archie_greeting_user_4'),
+      t('archie_greeting_user_5'),
+    ];
+    const randomIndex = Math.floor(Math.random() * greetings.length);
+    return greetings[randomIndex].replace('{{user}}', userName);
+  }, [user, loading, language, t]);
 
   return (
     <>
@@ -41,6 +67,18 @@ export const Hero = () => {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative h-[500px] rounded-lg overflow-hidden"
             >
+              {/* Frase de Archie - posicionada arriba del robot */}
+              {archieMessage && (
+                <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 max-w-lg px-4 text-center">
+                  <TypingAnimation 
+                    key={archieMessage}
+                    text={archieMessage}
+                    duration={35}
+                    className="text-base md:text-lg font-medium text-foreground dark:text-white drop-shadow-lg"
+                  />
+                </div>
+              )}
+              
               <Spotlight
                 className="-top-40 left-0 md:left-60 md:-top-20"
                 size={300}
