@@ -72,11 +72,11 @@ export const Hero = () => {
                 <div className="
                   absolute z-10
                   max-md:top-full max-md:mt-4 max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-[280px]
-                  md:left-full md:ml-6 md:top-[80px] md:w-[320px]
+                  md:top-[80px] md:right-6 md:left-auto md:translate-x-0 md:w-[320px]
                   bg-card/95 backdrop-blur-sm
                   border border-border/50
                   rounded-2xl p-4 shadow-xl
-                  before:content-[''] before:absolute before:left-[-8px] before:top-6
+                  before:content-[''] before:absolute before:-left-2 before:top-6
                   before:w-0 before:h-0 
                   before:border-t-[8px] before:border-t-transparent
                   before:border-b-[8px] before:border-b-transparent
