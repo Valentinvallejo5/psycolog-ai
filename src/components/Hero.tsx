@@ -73,26 +73,20 @@ export const Hero = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="
-                  absolute z-50
-                  max-md:top-full max-md:mt-4 max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-[280px]
-                  md:top-[80px] md:right-6 md:w-[320px]
-                  bg-[#b18cff]/80 text-white
-                  border border-[#b18cff]/40
-                  backdrop-blur-lg
-                  rounded-2xl p-4 shadow-xl
-                  before:content-[''] before:absolute before:-left-2.5 before:top-6
-                  before:w-0 before:h-0 
-                  before:border-t-[8px] before:border-t-transparent
-                  before:border-b-[8px] before:border-b-transparent
-                  before:border-r-[8px] before:border-r-[#b18cff]/80
-                  max-md:before:hidden
+                  absolute z-10
+                  max-md:top-full max-md:mt-4 max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-[90%]
+                  md:left-full md:ml-6 md:top-[100px] md:w-[320px]
+                  bg-[#b18dfc]/90 text-white backdrop-blur-md
+                  border border-white/20
+                  rounded-2xl p-4 shadow-2xl
+                  transition-all duration-500 ease-in-out
                 "
               >
                 <TypingAnimation 
                   key={archieMessage || 'archie-fallback'}
                   text={archieMessage || 'Hola, soy Archie, tu mental coach. Estoy acá para acompañarte.'}
                   duration={60}
-                  className="text-sm md:text-base font-medium leading-relaxed text-white"
+                  className="text-sm md:text-base font-medium leading-relaxed"
                 />
               </motion.div>
  
