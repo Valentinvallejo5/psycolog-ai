@@ -9,9 +9,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { UpgradeModal } from '@/components/UpgradeModal';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import chatIllustration from '@/assets/chat-illustration.png';
-import panicIllustration from '@/assets/panic-illustration.png';
-import meditationIllustration from '@/assets/meditation-illustration.png';
+import robotWaving from '@/assets/robot-waving.png';
+import robotPanic from '@/assets/robot-panic.png';
+import robotMeditation from '@/assets/robot-meditation.png';
 import { AdvancedButton } from '@/components/ui/gradient-button';
 import { MetalButton } from '@/components/ui/liquid-glass-button';
 
@@ -144,7 +144,7 @@ export default function Dashboard() {
       id: 'chat',
       title: t('dashboard_chat_title'),
       description: t('dashboard_chat_desc'),
-      image: chatIllustration,
+      image: robotWaving,
       icon: MessageCircle,
       buttonText: t('dashboard_start_chat'),
       available: true,
@@ -154,7 +154,7 @@ export default function Dashboard() {
       id: 'panic',
       title: t('dashboard_panic_title'),
       description: t('dashboard_panic_desc'),
-      image: panicIllustration,
+      image: robotPanic,
       icon: HeartPulse,
       buttonText: panicLimitReached ? t('dashboard_upgrade_unlock') : t('dashboard_get_help'),
       available: true,
@@ -166,7 +166,7 @@ export default function Dashboard() {
       id: 'meditation',
       title: t('dashboard_meditation_title'),
       description: t('dashboard_meditation_desc'),
-      image: meditationIllustration,
+      image: robotMeditation,
       icon: Flower2,
       buttonText: meditationLimitReached ? t('dashboard_upgrade_unlock') : t('dashboard_begin_meditation'),
       available: true,
@@ -215,14 +215,14 @@ export default function Dashboard() {
                   }`}
                 >
                   <CardHeader className="space-y-4">
-                    <div className="w-40 h-40 mx-auto relative">
+                    <div className="w-48 h-48 mx-auto relative p-6 rounded-3xl bg-gradient-to-br from-[#C9A6FF]/30 to-[#E8D9FF]/20 backdrop-blur-sm shadow-lg shadow-[#C9A6FF]/20">
                       <img 
                         src={feature.image} 
                         alt={feature.title}
-                        className="w-full h-full object-contain rounded-2xl"
+                        className="w-full h-full object-contain"
                       />
                       {feature.locked && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-lg">
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 rounded-3xl">
                           <Lock className="h-8 w-8 text-white" />
                         </div>
                       )}
