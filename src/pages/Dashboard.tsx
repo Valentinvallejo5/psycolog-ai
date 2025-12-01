@@ -245,11 +245,17 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex flex-col flex-1 pt-0">
+                    {/* Section A + B: description + pill with consistent heights */}
                     <div className="flex flex-col flex-1">
-                      <CardDescription className="text-center min-h-[72px] flex items-center justify-center">
-                        {feature.description}
-                      </CardDescription>
-                      <div className="text-center min-h-[40px] flex items-center justify-center">
+                      {/* Section A: description block with shared min-height */}
+                      <div className="min-h-[80px] flex items-start justify-center text-center">
+                        <CardDescription className="text-center">
+                          {feature.description}
+                        </CardDescription>
+                      </div>
+                      
+                      {/* Section B: pill, always reserves space even if empty */}
+                      <div className="mt-3 min-h-[32px] flex items-center justify-center">
                         {feature.usageInfo && (
                           <Badge variant={feature.locked ? "destructive" : "secondary"} className="text-xs">
                             {feature.usageInfo}
@@ -257,7 +263,9 @@ export default function Dashboard() {
                         )}
                       </div>
                     </div>
-                    <div className="mt-4">
+                    
+                    {/* Section C: CTA button anchored at the bottom */}
+                    <div className="mt-6">
                       {feature.locked ? (
                         <MetalButton 
                           className="w-full"
