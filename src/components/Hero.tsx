@@ -67,14 +67,27 @@ export const Hero = () => {
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="relative h-[500px] rounded-lg overflow-hidden"
             >
-              {/* Frase de Archie - posicionada arriba del robot */}
+              {/* Burbuja de diálogo de Archie */}
               {archieMessage && (
-                <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 max-w-lg px-4 text-center">
+                <div className="
+                  absolute z-10
+                  max-md:top-full max-md:mt-4 max-md:left-1/2 max-md:-translate-x-1/2 max-md:w-[280px]
+                  md:left-full md:ml-6 md:top-[80px] md:w-[320px]
+                  bg-card/95 backdrop-blur-sm
+                  border border-border/50
+                  rounded-2xl p-4 shadow-xl
+                  before:content-[''] before:absolute before:left-[-8px] before:top-6
+                  before:w-0 before:h-0 
+                  before:border-t-[8px] before:border-t-transparent
+                  before:border-b-[8px] before:border-b-transparent
+                  before:border-r-[8px] before:border-r-card
+                  max-md:before:hidden
+                ">
                   <TypingAnimation 
                     key={archieMessage}
                     text={archieMessage}
-                    duration={35}
-                    className="text-base md:text-lg font-medium text-foreground dark:text-white drop-shadow-lg"
+                    duration={60}
+                    className="text-sm md:text-base font-medium leading-relaxed"
                   />
                 </div>
               )}
