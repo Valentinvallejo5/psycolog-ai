@@ -3,10 +3,24 @@
  * tono de conversación y modo de interacción del usuario.
  */
 
+import { User } from '@supabase/supabase-js';
+
 type Mood = 'good_mood' | 'bad_mood';
 type Tone = 'friendly' | 'professional';
 type Mode = 'give_advice' | 'just_listen';
 type Language = 'es' | 'en';
+
+/**
+ * Obtiene el nombre de display del usuario para personalización
+ */
+export const getUserDisplayName = (user: User | null): string => {
+  if (!user) return '';
+  // Intentar obtener nombre de metadata (Google OAuth)
+  const fullName = user.user_metadata?.full_name;
+  if (fullName) return fullName.split(' ')[0]; // Solo primer nombre
+  // Fallback: usar parte del email antes de @
+  return user.email?.split('@')[0] || 'amigo';
+};
 
 export function getInitialBotMessage(
   mood: Mood,
