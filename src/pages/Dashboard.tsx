@@ -245,11 +245,11 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="flex flex-col flex-1 pt-0">
-                    <div className="flex flex-col space-y-4 flex-1">
-                      <CardDescription className="text-center min-h-[48px]">
+                    <div className="flex flex-col flex-1">
+                      <CardDescription className="text-center min-h-[72px] flex items-center justify-center">
                         {feature.description}
                       </CardDescription>
-                      <div className="text-center min-h-[24px]">
+                      <div className="text-center min-h-[40px] flex items-center justify-center">
                         {feature.usageInfo && (
                           <Badge variant={feature.locked ? "destructive" : "secondary"} className="text-xs">
                             {feature.usageInfo}
