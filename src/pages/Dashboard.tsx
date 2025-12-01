@@ -211,7 +211,7 @@ export default function Dashboard() {
               return (
                 <Card 
                   key={feature.id} 
-                  className={`relative transition-all hover:shadow-lg ${
+                  className={`relative transition-all hover:shadow-lg flex flex-col h-full ${
                     feature.locked ? 'opacity-75' : ''
                   }`}
                 >
@@ -244,18 +244,20 @@ export default function Dashboard() {
                       <CardTitle className="text-center">{feature.title}</CardTitle>
                     </div>
                   </CardHeader>
-                  <CardContent className="flex flex-col space-y-4 h-full">
-                    <CardDescription className="text-center min-h-[48px]">
-                      {feature.description}
-                    </CardDescription>
-                    <div className="text-center min-h-[24px]">
-                      {feature.usageInfo && (
-                        <Badge variant={feature.locked ? "destructive" : "secondary"} className="text-xs">
-                          {feature.usageInfo}
-                        </Badge>
-                      )}
+                  <CardContent className="flex flex-col flex-1 pt-0">
+                    <div className="flex flex-col space-y-4 flex-1">
+                      <CardDescription className="text-center min-h-[48px]">
+                        {feature.description}
+                      </CardDescription>
+                      <div className="text-center min-h-[24px]">
+                        {feature.usageInfo && (
+                          <Badge variant={feature.locked ? "destructive" : "secondary"} className="text-xs">
+                            {feature.usageInfo}
+                          </Badge>
+                        )}
+                      </div>
                     </div>
-                    <div className="mt-auto">
+                    <div className="mt-4">
                       {feature.locked ? (
                         <MetalButton 
                           className="w-full"
