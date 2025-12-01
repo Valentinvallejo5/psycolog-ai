@@ -65,7 +65,7 @@ export const Hero = () => {
               initial={{ opacity: 0, scale: 0.8, y: 50 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="relative h-[500px] rounded-lg overflow-hidden"
+              className="relative h-[500px] rounded-lg"
             >
               {/* Burbuja de diálogo de Archie */}
               {archieMessage && (
