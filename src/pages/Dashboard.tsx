@@ -14,6 +14,7 @@ import robotPanic from '@/assets/robot-panic.png';
 import robotMeditation from '@/assets/robot-meditation.png';
 import { AdvancedButton } from '@/components/ui/gradient-button';
 import { MetalButton } from '@/components/ui/liquid-glass-button';
+import { motion } from 'framer-motion';
 
 type UsageData = {
   panic_count: number;
@@ -215,7 +216,18 @@ export default function Dashboard() {
                   }`}
                 >
                   <CardHeader className="space-y-4">
-                    <div className="w-48 h-48 mx-auto relative p-4 rounded-3xl bg-gradient-to-br from-[#C9A6FF]/30 to-[#E8D9FF]/20 backdrop-blur-sm shadow-lg shadow-[#C9A6FF]/20 flex items-center justify-center">
+                    <motion.div 
+                      className="w-48 h-48 mx-auto relative p-4 rounded-3xl bg-gradient-to-br from-[#C9A6FF]/30 to-[#E8D9FF]/20 backdrop-blur-sm shadow-lg shadow-[#C9A6FF]/20 flex items-center justify-center"
+                      animate={{
+                        y: [0, -8, 0],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: feature.id === 'chat' ? 0 : feature.id === 'panic' ? 0.5 : 1,
+                      }}
+                    >
                       <img 
                         src={feature.image} 
                         alt={feature.title}
@@ -226,7 +238,7 @@ export default function Dashboard() {
                           <Lock className="h-8 w-8 text-white" />
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                     <div className="flex items-center justify-center gap-2">
                       <Icon className="h-5 w-5 text-primary" />
                       <CardTitle className="text-center">{feature.title}</CardTitle>
